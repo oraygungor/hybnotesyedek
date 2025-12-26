@@ -1,290 +1,214 @@
-// js/RunningPerformance.js
-
 const RunningPerformancePage = ({ lang }) => {
-    const { useState, useEffect, useMemo } = React;
+    const { useEffect } = React;
 
-    // --- State ve Hesaplama Mantığı ---
-    const [calculator, setCalculator] = useState({
-        vo2max: 60,       // ml/kg/min
-        threshold: 80,    // % of VO2max
-        economy: 200,     // ml/kg/km (Düşük olması iyidir)
-        durability: 100   // % (Yorgunluk direnci - Jones 2023)
-    });
-
-    // Joyner & Coyle (2008) Formülüne Dayalı Hız Hesabı
-    // Hız (km/h) = (VO2max * Threshold%) / Ekonomi Maliyeti
-    const stats = useMemo(() => {
-        const effectiveVO2 = calculator.vo2max * (calculator.threshold / 100);
-        // Durability: Yarış sonuna doğru performansın ne kadar düştüğünü simüle eder
-        const fatigueFactor = calculator.durability / 100; 
+    const tr = {
+        title: "Koşu Bilimi: Literatür Ne Diyor?",
+        subtitle: "Performansı belirleyen 4 temel faktör ve aralarındaki matematiksel ilişki.",
+        validity: "Geçerlilik: 1500m - Ultra Maraton (Aerobik Baskın Koşular)",
         
-        // Hız Hesabı (km/min -> km/h)
-        // Ekonomi birimi ml/kg/km olduğu için: (ml/kg/min) / (ml/kg/km) = km/min
-        const speedKmh = (effectiveVO2 / calculator.economy) * 60;
+        // 4 Sütun
+        vo2_title: "VO₂max",
+        vo2_sub: "MOTOR HACMİ",
+        vo2_desc: "Oksijen kullanma tavanı. Potansiyeli belirler.",
         
-        // Pace Hesabı (min/km)
-        const paceDec = 60 / speedKmh;
-        const paceMin = Math.floor(paceDec);
-        const paceSec = Math.round((paceDec - paceMin) * 60);
-
-        // Durability Etkisi (Yarış Sonu Tahmini Hız)
-        const lateRaceSpeed = speedKmh * fatigueFactor;
+        threshold_title: "% Eşik",
+        threshold_sub: "SÜRDÜRÜLEBİLİRLİK",
+        threshold_desc: "Motorun yüzde kaçını 'patlamadan' kullanabiliyorsun?",
         
-        return { speedKmh, paceMin, paceSec, lateRaceSpeed };
-    }, [calculator]);
+        economy_title: "Ekonomi",
+        economy_sub: "VERİMLİLİK",
+        economy_desc: "Aynı hızda ne kadar az yakıt harcıyorsun?",
+        
+        resilience_title: "Resilience",
+        resilience_sub: "DAYANIKLILIK",
+        resilience_desc: "Yarışın sonunda bu değerlerin düşmesini engelleyen kalkan.",
 
-    const handleSliderChange = (key, value) => {
-        setCalculator(prev => ({ ...prev, [key]: parseFloat(value) }));
+        // Formül Alanı
+        eq_title: "PERFORMANS DENKLEMİ",
+        eq_desc: "Hız (v), üretebildiğin aerobik gücün, harcama maliyetine (Cr) bölümüdür. Resilience ise bu denklemi zaman boyutunda korur.",
+        resilience_factor_title: "Resilience (Dayanıklılık) Faktörü:",
+        resilience_factor_desc: "Bu formül 'taze' bir koşucu için geçerlidir. Maraton veya Ultra maratonda, saatler geçtikçe <strong>Cr (Maliyet)</strong> artar ve <strong>%LT</strong> düşer. Resilience, bu düşüşü minimize ederek formülün sonucunu (Hızı) yarış sonuna kadar korumanızı sağlar.",
+
+        // Referanslar
+        ref_title: "REFERANSLAR (LİTERATÜR)",
+        ref_1: "Joyner & Coyle (2008): Dayanıklılık performansı belirleyicileri.",
+        ref_2: "Bassett & Howley (2000): VO2max sınırlayıcı faktörleri.",
+        ref_3: "Saunders et al. (2004): Koşu ekonomisi optimizasyonu.",
+        ref_4: "Jones (2024): 4. Boyut: Resilience & Durability.",
+        ref_5: "Barnes & Kilding (2015): Ekonomiyi geliştirme stratejileri."
     };
 
-    // --- İçerik Metinleri (TR/EN) ---
-    const t = {
-        title: lang === 'tr' ? 'Performansın Deterministik Modeli' : 'Deterministic Model of Performance',
-        subtitle: lang === 'tr' ? 'Bilimsel formüllerle koşu hızını belirleyen faktörleri keşfedin.' : 'Discover the factors determining running speed using scientific formulas.',
+    const en = {
+        title: "Running Science: What the Literature Says",
+        subtitle: "The 4 key determinants of performance and their mathematical relationship.",
+        validity: "Validity: 1500m - Ultra Marathon (Aerobic Dominant Runs)",
         
-        // Faktörler
-        f_vo2: { 
-            title: 'VO2max', 
-            analogy: lang === 'tr' ? 'Motor Hacmi' : 'Engine Size',
-            desc: lang === 'tr' ? 'Oksijen kullanım kapasiteniz (Aerobik Tavan).' : 'Your capacity to use oxygen (Aerobic Ceiling).',
-            ref: 'Bassett & Howley (2000)'
-        },
-        f_lt: { 
-            title: lang === 'tr' ? 'Laktat Eşiği' : 'Lactate Threshold', 
-            analogy: lang === 'tr' ? 'Motor Devri (Redline)' : 'Redline RPM',
-            desc: lang === 'tr' ? 'Motoru patlatmadan sürdürebildiğin maksimum güç yüzdesi.' : 'The max power % you can sustain without blowing the engine.',
-            ref: 'Joyner & Coyle (2008)'
-        },
-        f_re: { 
-            title: lang === 'tr' ? 'Koşu Ekonomisi' : 'Running Economy', 
-            analogy: lang === 'tr' ? 'Yakıt Verimliliği' : 'Fuel Efficiency',
-            desc: lang === 'tr' ? 'Belirli bir hızda ne kadar az oksijen (enerji) harcadığın.' : 'How little oxygen (energy) you use at a given speed.',
-            note: lang === 'tr' ? '(Düşük olması iyidir)' : '(Lower is better)',
-            ref: 'Saunders et al. (2004)'
-        },
-        f_dur: { 
-            title: lang === 'tr' ? 'Dayanıklılık (4. Boyut)' : 'Durability (4th Dimension)', 
-            analogy: lang === 'tr' ? 'Sağlamlık' : 'Resilience',
-            desc: lang === 'tr' ? 'Yorgunluğa rağmen teknik ve fizyolojik verimini koruma yeteneği.' : 'Ability to maintain technical/physiological efficiency despite fatigue.',
-            ref: 'Jones (2023)'
-        },
+        // 4 Pillars
+        vo2_title: "VO₂max",
+        vo2_sub: "ENGINE SIZE",
+        vo2_desc: "The ceiling of oxygen utilization. Determines potential.",
+        
+        threshold_title: "% Threshold",
+        threshold_sub: "SUSTAINABILITY",
+        threshold_desc: "What percentage of the engine can you use without 'blowing up'?",
+        
+        economy_title: "Economy",
+        economy_sub: "EFFICIENCY",
+        economy_desc: "How much fuel do you burn at a given speed?",
+        
+        resilience_title: "Resilience",
+        resilience_sub: "DURABILITY",
+        resilience_desc: "The shield that prevents these values from decaying late in the race.",
 
-        // Arayüz
-        calc_title: lang === 'tr' ? 'Performans Simülatörü' : 'Performance Simulator',
-        result_speed: lang === 'tr' ? 'Tahmini Hız' : 'Estimated Speed',
-        result_pace: lang === 'tr' ? 'Pace (Tempo)' : 'Pace',
-        result_late: lang === 'tr' ? 'Yarış Sonu Hızı' : 'Late Race Speed',
-        details: lang === 'tr' ? 'Bilimsel Detaylar' : 'Scientific Details',
-        
-        // Detay Kartları
-        cards: [
-            {
-                id: 'vo2',
-                title: 'VO2max',
-                icon: Icons.Activity,
-                text: lang === 'tr' 
-                    ? "Bassett & Howley (2000) makalesine göre VO2max, kalp-dolaşım sisteminin kaslara oksijen taşıma kapasitesiyle sınırlıdır. Bir arabanın motor hacmi gibidir; 1.6 motor ile 5.0 motorun potansiyeli farklıdır. Ancak yarışı sadece büyük motor kazanmaz." 
-                    : "According to Bassett & Howley (2000), VO2max is limited by the cardiorespiratory system's ability to deliver oxygen. It's like car engine size; a 1.6L vs 5.0L engine have different potentials, but the biggest engine doesn't always win."
-            },
-            {
-                id: 'threshold',
-                title: lang === 'tr' ? 'Laktat Eşiği' : 'Lactate Threshold',
-                icon: Icons.Gauge, // Gauge yoksa Activity kullan
-                text: lang === 'tr' 
-                    ? "Joyner & Coyle (2008) 'Performance VO2' kavramını kullanır. VO2max'ın ne kadarını uzun süre kullanabiliyorsun? Elit atletler %85-90 oranında koşabilirken, amatörler %65-70'te takılır. Antrenmanla en çok gelişen parametrelerden biridir." 
-                    : "Joyner & Coyle (2008) refer to 'Performance VO2'. How much of your VO2max can you sustain? Elite athletes can run at 85-90%, while amateurs might stick to 65-70%. It's one of the most trainable parameters."
-            },
-            {
-                id: 'economy',
-                title: lang === 'tr' ? 'Koşu Ekonomisi' : 'Running Economy',
-                icon: Icons.Zap,
-                text: lang === 'tr' 
-                    ? "Saunders (2004) ve Barnes (2015), ekonomiyi biyomekanik ve fizyolojinin toplamı olarak tanımlar. Paula Radcliffe örneği (Jones, 2006) efsanedir: VO2max'ı değişmemesine rağmen, ekonomisini yıllar içinde geliştirerek Dünya Rekoru kırmıştır. Yani motoru büyütmedi, yakıtı verimli kullandı." 
-                    : "Saunders (2004) & Barnes (2015) define economy as the sum of biomechanics and physiology. The Paula Radcliffe case (Jones, 2006) is legendary: She broke the WR not by increasing VO2max, but by improving her economy over years."
-            },
-            {
-                id: 'durability',
-                title: lang === 'tr' ? 'Dayanıklılık (Durability)' : 'Durability',
-                icon: Icons.BatteryCharging,
-                text: lang === 'tr' 
-                    ? "Prof. Andrew Jones (2023), bunu '4. Boyut' olarak tanımlar. Laboratuvarda taze kaslarla ölçülen değerler, 30. kilometrede geçerli olmayabilir. Gerçek şampiyonlar, yorulduklarında fizyolojik değerleri (ekonomi/eşik) bozulmayanlardır." 
-                    : "Prof. Andrew Jones (2023) calls this the '4th Dimension'. Lab values measured with fresh muscles may not apply at km 30. True champions are those whose physiological values (economy/threshold) do not deteriorate when fatigued."
-            }
-        ]
+        // Formula Area
+        eq_title: "THE PERFORMANCE EQUATION",
+        eq_desc: "Velocity (v) is your sustainable aerobic power divided by the cost of running (Cr). Resilience protects this equation over time.",
+        resilience_factor_title: "Resilience Factor:",
+        resilience_factor_desc: "This formula applies to a 'fresh' runner. In Marathons or Ultras, as hours pass, <strong>Cr (Cost)</strong> increases and <strong>%LT</strong> decreases. Resilience minimizes this decay, preserving your speed until the finish line.",
+
+        // References
+        ref_title: "REFERENCES (LITERATURE)",
+        ref_1: "Joyner & Coyle (2008): Endurance performance determinants.",
+        ref_2: "Bassett & Howley (2000): Limiting factors for VO2max.",
+        ref_3: "Saunders et al. (2004): Running economy optimization.",
+        ref_4: "Jones (2024): The 4th Dimension: Resilience & Durability.",
+        ref_5: "Barnes & Kilding (2015): Strategies to improve economy."
     };
+
+    const t = lang === 'tr' ? tr : en;
+
+    // Özel İkonlar
+    const IconLungs = () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-cyan-400"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 19.2c-1 .9-1.2 2.5-.5 3.5.7.9 2.1 1.2 3.5.5Z"/><path d="m8 13 4 2"/></svg>;
+    const IconFire = () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-rose-400"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.1.2-2.2.5-3.27.57 1.75 2.01 2.32 3 2.77Z"/></svg>;
+    const IconGear = () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-emerald-400"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>;
+    const IconShield = () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-amber-400"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
+    const IconValid = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+
+    // MathJax Tetikleyici
+    useEffect(() => {
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise();
+        }
+    }, [lang]);
 
     return (
-        <div className="space-y-8 animate-fade-in pb-20">
+        <div className="bg-slate-800 text-slate-200 rounded-3xl p-6 md:p-10 max-w-[1200px] mx-auto border border-slate-700 shadow-2xl animate-fade-in font-sans">
+            
             {/* Header */}
-            <div className="bg-gradient-to-r from-slate-900 to-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
-                <h2 className="text-3xl md:text-4xl font-black text-white mb-3 flex items-center gap-3">
-                    <Icons.TrendingUp className="text-primary" /> {t.title}
-                </h2>
-                <p className="text-slate-400 max-w-2xl text-lg">{t.subtitle}</p>
+            <div className="text-center mb-10 w-full">
+                <h1 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight tracking-tight">
+                    {t.title}
+                </h1>
+                <p className="text-sm md:text-base text-slate-400 max-w-xl mx-auto mb-4">
+                    {t.subtitle}
+                </p>
+                <div className="flex justify-center">
+                    <div className="bg-primary/10 border border-primary/20 text-primary text-xs px-3 py-1.5 rounded-lg flex items-center">
+                        <IconValid />
+                        <span><strong>{t.validity}</strong></span>
+                    </div>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* 4 Temel Sütun */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mb-10">
                 
-                {/* SOL KOLON: Kontrol Paneli (Simülatör) */}
-                <div className="lg:col-span-7 space-y-6">
-                    <div className="bg-slate-800 p-6 md:p-8 rounded-3xl border border-slate-700 shadow-xl">
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                <Icons.Sliders size={20} className="text-primary"/> {t.calc_title}
-                            </h3>
-                            <div className="text-xs font-mono text-slate-500 bg-slate-900 px-2 py-1 rounded border border-slate-700">
-                                Joyner & Coyle Model
-                            </div>
-                        </div>
-
-                        {/* Slider: VO2max */}
-                        <div className="mb-8 group">
-                            <div className="flex justify-between mb-2">
-                                <label className="text-sm font-bold text-slate-300 flex items-center gap-2">
-                                    <Icons.Activity size={16} className="text-blue-400"/> {t.f_vo2.title}
-                                    <span className="text-[10px] text-slate-500 font-normal ml-2 hidden md:inline">({t.f_vo2.analogy})</span>
-                                </label>
-                                <span className="text-blue-400 font-mono font-bold">{calculator.vo2max} <span className="text-xs text-slate-500">ml/kg/min</span></span>
-                            </div>
-                            <input 
-                                type="range" min="30" max="90" step="1" 
-                                value={calculator.vo2max}
-                                onChange={(e) => handleSliderChange('vo2max', e.target.value)}
-                                className="w-full accent-blue-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                            />
-                            <p className="text-xs text-slate-500 mt-2">{t.f_vo2.desc}</p>
-                        </div>
-
-                        {/* Slider: Threshold */}
-                        <div className="mb-8 group">
-                            <div className="flex justify-between mb-2">
-                                <label className="text-sm font-bold text-slate-300 flex items-center gap-2">
-                                    <Icons.Gauge size={16} className="text-red-400"/> {t.f_lt.title}
-                                    <span className="text-[10px] text-slate-500 font-normal ml-2 hidden md:inline">({t.f_lt.analogy})</span>
-                                </label>
-                                <span className="text-red-400 font-mono font-bold">%{calculator.threshold} <span className="text-xs text-slate-500">of VO2max</span></span>
-                            </div>
-                            <input 
-                                type="range" min="50" max="95" step="1" 
-                                value={calculator.threshold}
-                                onChange={(e) => handleSliderChange('threshold', e.target.value)}
-                                className="w-full accent-red-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                            />
-                            <p className="text-xs text-slate-500 mt-2">{t.f_lt.desc}</p>
-                        </div>
-
-                        {/* Slider: Economy */}
-                        <div className="mb-8 group">
-                            <div className="flex justify-between mb-2">
-                                <label className="text-sm font-bold text-slate-300 flex items-center gap-2">
-                                    <Icons.Zap size={16} className="text-green-400"/> {t.f_re.title}
-                                    <span className="text-[10px] text-slate-500 font-normal ml-2 hidden md:inline">({t.f_re.analogy})</span>
-                                </label>
-                                <span className="text-green-400 font-mono font-bold">{calculator.economy} <span className="text-xs text-slate-500">ml/kg/km</span></span>
-                            </div>
-                            <input 
-                                type="range" min="160" max="300" step="5" 
-                                value={calculator.economy}
-                                onChange={(e) => handleSliderChange('economy', e.target.value)}
-                                className="w-full accent-green-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                                style={{direction: 'rtl'}} // Terse çalışır, düşük iyidir görseli için
-                            />
-                            <p className="text-xs text-slate-500 mt-2">{t.f_re.desc} <span className="text-green-400 font-bold">{t.f_re.note}</span></p>
-                        </div>
-
-                         {/* Slider: Durability */}
-                         <div className="mb-2 group">
-                            <div className="flex justify-between mb-2">
-                                <label className="text-sm font-bold text-slate-300 flex items-center gap-2">
-                                    <Icons.BatteryCharging size={16} className="text-purple-400"/> {t.f_dur.title}
-                                </label>
-                                <span className="text-purple-400 font-mono font-bold">%{calculator.durability} <span className="text-xs text-slate-500">Resilience</span></span>
-                            </div>
-                            <input 
-                                type="range" min="80" max="100" step="1" 
-                                value={calculator.durability}
-                                onChange={(e) => handleSliderChange('durability', e.target.value)}
-                                className="w-full accent-purple-500 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
-                            />
-                            <p className="text-xs text-slate-500 mt-2">{t.f_dur.desc}</p>
-                        </div>
+                {/* 1. VO2max */}
+                <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors">
+                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700">
+                        <IconLungs />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-bold text-white">{t.vo2_title}</h3>
+                        <div className="text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.vo2_sub}</div>
+                        <p className="text-slate-400 text-xs leading-relaxed">{t.vo2_desc}</p>
                     </div>
                 </div>
 
-                {/* SAĞ KOLON: Sonuç Ekranı (Dashboard) */}
-                <div className="lg:col-span-5 space-y-6">
-                    <div className="bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-xl flex flex-col justify-center h-full relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-red-500 to-green-500"></div>
-                        
-                        <div className="text-center mb-8">
-                            <h4 className="text-slate-400 font-bold uppercase tracking-widest text-xs mb-2">{t.result_speed}</h4>
-                            <div className="text-6xl md:text-7xl font-black text-white font-mono tracking-tighter">
-                                {stats.speedKmh.toFixed(1)} <span className="text-xl md:text-2xl text-slate-500">km/h</span>
-                            </div>
-                        </div>
-
-                        <div className="bg-slate-900/50 rounded-2xl p-6 border border-slate-700/50 mb-6">
-                            <div className="flex justify-between items-end mb-2">
-                                <span className="text-slate-400 text-sm font-bold">{t.result_pace}</span>
-                                <span className="text-3xl font-mono font-bold text-primary">
-                                    {stats.paceMin}:{stats.paceSec < 10 ? '0'+stats.paceSec : stats.paceSec} <span className="text-xs text-slate-500">/km</span>
-                                </span>
-                            </div>
-                            <div className="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
-                                <div className="bg-primary h-full animate-pulse" style={{width: '100%'}}></div>
-                            </div>
-                        </div>
-
-                        {/* Durability Uyarısı */}
-                        {calculator.durability < 100 && (
-                            <div className="bg-purple-900/20 rounded-2xl p-4 border border-purple-500/30 flex items-center gap-4 animate-fade-in">
-                                <div className="bg-purple-500/20 p-3 rounded-full text-purple-400">
-                                    <Icons.AlertTriangle size={20} />
-                                </div>
-                                <div>
-                                    <div className="text-xs text-purple-300 font-bold uppercase">{t.result_late}</div>
-                                    <div className="text-white font-mono font-bold text-lg">
-                                        ~{stats.lateRaceSpeed.toFixed(1)} km/h
-                                    </div>
-                                    <div className="text-[10px] text-purple-400/70 leading-tight mt-1">
-                                        Jones (2023): Düşük dayanıklılık (durability) yarış sonunda performans kaybına neden olur.
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="mt-auto pt-6 text-center">
-                            <div className="latex-formula text-sm opacity-50 overflow-x-auto">
-                     {`$$ v = \\frac{VO_{2max} \\times \\%LT}{Economy} $$`}
-                            </div>
-                        </div>
+                {/* 2. Threshold */}
+                <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors">
+                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700">
+                        <IconFire />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-bold text-white">{t.threshold_title}</h3>
+                        <div className="text-rose-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.threshold_sub}</div>
+                        <p className="text-slate-400 text-xs leading-relaxed">{t.threshold_desc}</p>
                     </div>
                 </div>
+
+                {/* 3. Economy */}
+                <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors">
+                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700">
+                        <IconGear />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-bold text-white">{t.economy_title}</h3>
+                        <div className="text-emerald-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.economy_sub}</div>
+                        <p className="text-slate-400 text-xs leading-relaxed">{t.economy_desc}</p>
+                    </div>
+                </div>
+
+                {/* 4. Resilience */}
+                <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors">
+                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700">
+                        <IconShield />
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-bold text-white">{t.resilience_title}</h3>
+                        <div className="text-amber-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.resilience_sub}</div>
+                        <p className="text-slate-400 text-xs leading-relaxed">{t.resilience_desc}</p>
+                    </div>
+                </div>
+
             </div>
 
-            {/* BİLGİ KARTLARI (Referanslar) */}
-            <div>
-                <h3 className="text-2xl font-bold text-white mb-6 pl-2 border-l-4 border-primary">{t.details}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {t.cards.map((card) => (
-                        <div key={card.id} className="bg-slate-800 p-6 rounded-2xl border border-slate-700 hover:border-primary/50 transition-colors hover-lift group">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="p-3 rounded-xl bg-slate-900 text-primary group-hover:scale-110 transition-transform border border-slate-700">
-                                    {card.icon ? <card.icon size={24} /> : <Icons.Activity size={24}/>}
-                                </div>
-                                <h4 className="text-lg font-bold text-white">{card.title}</h4>
-                            </div>
-                            <p className="text-slate-400 text-sm leading-relaxed">
-                                {card.text}
-                            </p>
-                        </div>
-                    ))}
+            {/* Denklem Bölümü */}
+            <div className="w-full bg-slate-900 rounded-2xl p-6 md:p-8 border border-slate-800 mb-10 relative overflow-hidden shadow-inner">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
+                
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex-1">
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">{t.eq_title}</h3>
+                        <p className="text-slate-500 text-xs mb-4 max-w-prose">
+                            {t.eq_desc}
+                        </p>
+                    </div>
+
+                    {/* LaTeX Formülü */}
+                    <div className="bg-black/30 px-6 py-4 rounded-xl border border-white/5 text-lg md:text-xl text-emerald-300 overflow-x-auto min-w-[200px] text-center shadow-lg">
+                        {`$$ v = \\frac{VO_{2max} \\times \\%LT}{Cr} $$`}
+                    </div>
+                </div>
+
+                {/* Resilience Açıklaması */}
+                <div className="mt-6 pt-6 border-t border-slate-800 flex items-start gap-3">
+                    <div className="mt-1 text-amber-400 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                    </div>
+                    <p className="text-xs text-slate-400 leading-relaxed" dangerouslySetInnerHTML={{__html: `<strong class="text-amber-400">${t.resilience_factor_title}</strong> ${t.resilience_factor_desc}`}}></p>
                 </div>
             </div>
+
+            {/* Referanslar */}
+            <div className="w-full border-t border-slate-700/50 pt-8">
+                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">{t.ref_title}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                    {[t.ref_1, t.ref_2, t.ref_3, t.ref_4, t.ref_5].map((ref, idx) => {
+                        const colors = ["bg-cyan-500", "bg-rose-500", "bg-emerald-500", "bg-amber-500", "bg-purple-500"];
+                        return (
+                            <div key={idx} className="text-[11px] text-slate-500 flex items-center">
+                                <span className={`w-1.5 h-1.5 ${colors[idx]} rounded-full mr-2 opacity-70`}></span>
+                                <span>{ref}</span>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+
         </div>
     );
 };
 
-// Global erişim için window'a ata (App.js içinde modül importu yoksa)
+// Global'e aktar
 window.RunningPerformancePage = RunningPerformancePage;
