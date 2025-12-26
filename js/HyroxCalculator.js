@@ -168,42 +168,72 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
         });
     };
 
+    // --- SLIDER STYLE (ÖNEMLİ: CSS'i burada inline veriyoruz ki Tailwind ezmesin) ---
+    // Bu stil, slider'ın thumb (tutacak) kısmının her tarayıcıda düzgün görünmesini ve basılabilir olmasını sağlar.
+    const sliderStyle = {
+        WebkitAppearance: 'none',
+        width: '100%',
+        height: '6px',
+        background: '#334155', // slate-700
+        borderRadius: '3px',
+        outline: 'none',
+        cursor: 'pointer',
+        position: 'relative',
+        zIndex: 50 // En üstte kalması için
+    };
+
     // --- SUB-COMPONENTS ---
-    const SliderGroup = ({ keys, title, colorClass }) => (
-        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden">
-             <div className={`absolute top-0 right-0 w-32 h-32 ${colorClass} rounded-full mix-blend-multiply filter blur-3xl opacity-5 pointer-events-none z-0`}></div>
+    // SliderGroup: Arka plan efektlerini kaldırdım veya CSS ile pointer-events:none yaptım.
+    // Ancak en garantisi slider'ı ayrı bir temiz div içine almaktır.
+    
+    const SliderGroup = ({ keys, title, colorClass, icon }) => (
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden isolate">
+             {/* Arka plan süsü - pointer-events-none ve düşük z-index ile tamamen etkisiz */}
+             <div className={`absolute -top-10 -right-10 w-48 h-48 ${colorClass} rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none -z-10`}></div>
+            
             <h2 className={`text-2xl font-black mb-6 flex items-center gap-2 ${colorClass.replace('bg-', 'text-')} relative z-10`}>
-                {title}
+                {icon} {title}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6 relative z-10">
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 relative z-10">
                 {keys.map(key => {
                     const data = STATION_DATA[key];
                     const val = values[key];
                     const pct = calculatePercentile(val, data.p10, data.p90);
                     
+                    // Slider rengi için dinamik class
+                    const accentColor = colorClass.includes('rose') ? 'accent-rose-500' 
+                                      : colorClass.includes('indigo') ? 'accent-indigo-500' 
+                                      : 'accent-cyan-400';
+
                     return (
-                        <div key={key} className="space-y-2 relative">
+                        <div key={key} className="space-y-3 relative group">
                             <div className="flex justify-between items-end">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-200 transition-colors">
                                     {t.stations[key]}
                                 </label>
                                 <div className="flex items-center gap-2">
                                     <span className={`text-[10px] font-bold ${getPctColor(pct)}`}>
                                         {t.pct_prefix_station}{pct.toFixed(1)}
                                     </span>
-                                    <span className="font-mono text-sm font-bold text-white bg-slate-900 px-2 py-0.5 rounded border border-slate-700 w-16 text-center">
+                                    <span className="font-mono text-sm font-bold text-white bg-slate-900 px-3 py-1 rounded border border-slate-700 w-20 text-center shadow-inner">
                                         {formatMMSS(val)}
                                     </span>
                                 </div>
                             </div>
-                            <input 
-                                type="range" 
-                                min={data.min} 
-                                max={data.max} 
-                                value={val} 
-                                onChange={(e) => handleSliderChange(key, e.target.value)}
-                                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary hover:accent-primary/80 relative z-20"
-                            />
+                            
+                            {/* SLIDER YAPISI: Tamamen temizlendi */}
+                            <div className="relative w-full h-6 flex items-center">
+                                <input 
+                                    type="range" 
+                                    min={data.min} 
+                                    max={data.max} 
+                                    value={val} 
+                                    onChange={(e) => handleSliderChange(key, e.target.value)}
+                                    style={sliderStyle}
+                                    className={`w-full ${accentColor} hover:brightness-110 active:cursor-grabbing`}
+                                />
+                            </div>
                         </div>
                     );
                 })}
@@ -216,7 +246,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
             {/* Header */}
             <div className="text-center mb-10 space-y-2">
                 <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white mb-2">
-                    <span className="text-amber-400">HYROX</span> {lang === 'tr' ? 'Süre Hesaplama' : 'Time Calculator'}
+                    <span className="text-amber-400">HYROX</span> {t.header.replace('HYROX ', '')}
                 </h1>
             </div>
 
@@ -225,17 +255,17 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                 <div className="lg:col-span-8 space-y-8">
                     {/* Koşular */}
                     <div className="relative">
-                        <div className="absolute right-6 top-6 z-30 flex items-center gap-2 bg-slate-900/80 p-1.5 rounded-lg border border-slate-700/50 backdrop-blur-sm">
+                        <div className="absolute right-6 top-6 z-20 flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-lg border border-slate-700/50 backdrop-blur-sm shadow-lg">
                             <input 
                                 type="text" 
                                 placeholder={t.sync_placeholder} 
                                 value={syncInput}
                                 onChange={(e) => setSyncInput(e.target.value)}
-                                className="w-16 bg-transparent text-center text-sm text-white focus:outline-none font-mono"
+                                className="w-16 bg-transparent text-center text-sm text-white focus:outline-none font-mono font-bold"
                             />
                             <button 
                                 onClick={handleSync}
-                                className="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3 py-1 rounded text-xs font-bold transition-colors"
+                                className="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded text-xs font-bold transition-colors shadow-lg active:scale-95 transform"
                             >
                                 {t.sync_button}
                             </button>
@@ -243,7 +273,8 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                         <SliderGroup 
                             keys={['run1','run2','run3','run4','run5','run6','run7','run8']} 
                             title={t.running_header} 
-                            colorClass="bg-rose-500" 
+                            colorClass="bg-rose-500"
+                            icon={<span>🏃</span>}
                         />
                     </div>
 
@@ -251,35 +282,39 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                     <SliderGroup 
                         keys={['ws1','ws2','ws3','ws4','ws5','ws6','ws7','ws8']} 
                         title={t.workouts_header} 
-                        colorClass="bg-indigo-500" 
+                        colorClass="bg-indigo-500"
+                        icon={<span>🏋️</span>}
                     />
 
-                    {/* Roxzone */}
-                    <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-5 pointer-events-none z-0"></div>
+                    {/* Roxzone (Tekli olduğu için özel yapı) */}
+                    <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden isolate">
+                        <div className="absolute -top-10 -right-10 w-48 h-48 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none -z-10"></div>
                         <h2 className="text-2xl font-black mb-6 flex items-center gap-2 text-cyan-400 relative z-10">
-                            {t.roxzone_header}
+                            <span>⏱️</span> {t.roxzone_header}
                         </h2>
-                        <div className="space-y-2 max-w-xl relative z-10">
+                        <div className="space-y-3 max-w-xl relative z-10">
                             <div className="flex justify-between items-end">
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t.stations.roxzone}</label>
                                 <div className="flex items-center gap-2">
                                     <span className={`text-[10px] font-bold ${getPctColor(stats.roxPct)}`}>
                                         {t.pct_prefix_station}{stats.roxPct.toFixed(1)}
                                     </span>
-                                    <span className="font-mono text-sm font-bold text-white bg-slate-900 px-2 py-0.5 rounded border border-slate-700 w-16 text-center">
+                                    <span className="font-mono text-sm font-bold text-white bg-slate-900 px-3 py-1 rounded border border-slate-700 w-20 text-center shadow-inner">
                                         {formatMMSS(values.roxzone)}
                                     </span>
                                 </div>
                             </div>
-                            <input 
-                                type="range" 
-                                min={STATION_DATA.roxzone.min} 
-                                max={STATION_DATA.roxzone.max} 
-                                value={values.roxzone} 
-                                onChange={(e) => handleSliderChange('roxzone', e.target.value)}
-                                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-400 hover:accent-cyan-300 relative z-20"
-                            />
+                            <div className="relative w-full h-6 flex items-center">
+                                <input 
+                                    type="range" 
+                                    min={STATION_DATA.roxzone.min} 
+                                    max={STATION_DATA.roxzone.max} 
+                                    value={values.roxzone} 
+                                    onChange={(e) => handleSliderChange('roxzone', e.target.value)}
+                                    style={sliderStyle}
+                                    className="w-full accent-cyan-400 hover:brightness-110 active:cursor-grabbing"
+                                />
+                            </div>
                         </div>
                     </section>
                 </div>
