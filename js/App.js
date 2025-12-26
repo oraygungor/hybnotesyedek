@@ -13,12 +13,10 @@ const THEMES = [
     { id: 'emerald', name: 'Zümrüt', rgb: '16 185 129', hex: '#10b981' },
 ];
 
-// --- ÖZEL HYROX LOGOSU (Eklendi) ---
+// --- ÖZEL HYROX LOGOSU (GÜNCELLENDİ: Daha kalın ve gerçekçi X) ---
 const HyroxLogo = ({ size = 20, className = "" }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <path d="M4 4l16 16" />
-        <path d="M4 20l16 -16" />
-        <path d="M4 12h16" strokeWidth="1.5" strokeOpacity="0.5" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="square" strokeLinejoin="miter" className={className}>
+         <path d="M5 5L19 19M5 19L19 5" />
     </svg>
 );
 
