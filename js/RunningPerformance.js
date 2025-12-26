@@ -2,77 +2,95 @@ const RunningPerformancePage = ({ lang }) => {
     const { useEffect } = React;
 
     const tr = {
-        title: "Koşu Performansını Etkileyen Temel Faktörler",
-        subtitle: "Literatür koşu performansını etkileyen temelde 4 faktöre yer veriyor.",
-        validity: "Geçerlilik: 1500m - Ultra Maraton (Aerobik Baskın Koşular)",
+        title: "Koşu Performansını Etkileyen Faktörler",
+        subtitle: "Klasik fizyolojik model (3 faktör) ve modern 4. boyut (durability).",
+        validity: "Geçerlilik: 3000m - Maraton (Aerobik Baskın)",
         
         // 4 Sütun
         vo2_title: "VO₂max",
         vo2_sub: "OKSİJEN KULLANMA TAVANI",
-        vo2_desc: "Aerobik kapasitenin üst limiti. Bir arabanın motor hacmi gibidir; ne kadar yüksekse potansiyel o kadar fazladır.",
+        vo2_desc: "Aerobik kapasitenin üst limiti. Potansiyeli belirler ancak tek başına kazananı belirlemez.",
         
-        threshold_title: "% Eşik",
-        threshold_sub: "SÜRDÜRÜLEBİLİRLİK",
-        threshold_desc: "Mevcut kapasitenin yüzde kaçını 'patlamadan' (yorulmadan) uzun süre kullanabiliyorsun?",
+        threshold_title: "Fractional Utilization",
+        threshold_sub: "%VO₂max @ EŞİK",
+        threshold_desc: "Mevcut kapasitenin yüzde kaçını 'patlamadan' (metabolik kararlılıkla) sürdürebiliyorsun?",
         
-        economy_title: "Ekonomi",
+        economy_title: "Ekonomi (Cr)",
         economy_sub: "VERİMLİLİK",
-        economy_desc: "Belirli bir hızda koşarken ne kadar enerji (yakıt) harcıyorsun?",
+        economy_desc: "Belirli bir hızda koşarken ne kadar oksijen/enerji harcıyorsun?",
         
-        resilience_title: "Resilience",
-        resilience_sub: "DAYANIKLILIK",
-        resilience_desc: "Yarışın sonlarına doğru yorgunluğa rağmen performansı koruyabilme yeteneği.",
+        resilience_title: "Durability",
+        resilience_sub: "ZAMANA BAĞLI DİRENÇ",
+        resilience_desc: "Yarış uzadıkça fizyolojik parametrelerin bozulmaya (drift) karşı direnci.",
 
         // Formül Alanı
-        eq_title: "PERFORMANS DENKLEMİ",
-        eq_desc: "Hız (v), üretebildiğin aerobik gücün, harcama maliyetine (Cr) bölümüdür. Resilience ise bu denklemi zaman boyutunda korur.",
+        eq_title: "PERFORMANS DENKLEMİ (ZAMANA BAĞLI)",
+        eq_desc: "Hız (v), o anki sürdürülebilir aerobik gücün, koşu maliyetine (Cr) bölümüdür.",
+        eq_note: "Not: Birim uyumu için VO₂max (ml/kg/dk) ve Cr (ml/kg/km) kullanıldığında hız m/dk cinsinden çıkar.",
+
         resilience_factor_title: "Resilience (Dayanıklılık) Faktörü:",
-        resilience_factor_desc: "Bu formül 'taze' bir koşucu için geçerlidir. Maraton veya Ultra maratonda, saatler geçtikçe <strong>Cr (Maliyet)</strong> artar ve <strong>%LT</strong> düşer. Resilience, bu düşüşü minimize ederek formülün sonucunu (Hızı) yarış sonuna kadar korumanızı sağlar.",
+        resilience_factor_text_1: "Bu formüle",
+        resilience_factor_highlight_time: "(t) zaman değişkeni",
+        resilience_factor_text_2: "eklendiğinde gerçek hayat senaryosu ortaya çıkar. Maratonun sonlarına doğru yorgunlukla birlikte",
+        resilience_factor_highlight_1: "Cr (Maliyet) artar",
+        resilience_factor_text_3: "ve",
+        resilience_factor_highlight_2: "Fractional Utilization düşer",
+        resilience_factor_text_4: ". Resilience, bu düşüşü minimize etme yeteneğidir.",
 
         // Referanslar
         ref_title: "REFERANSLAR (LİTERATÜR)",
-        ref_1: "Joyner & Coyle (2008): Dayanıklılık performansı belirleyicileri.",
-        ref_2: "Bassett & Howley (2000): VO2max sınırlayıcı faktörleri.",
-        ref_3: "Saunders et al. (2004): Koşu ekonomisi optimizasyonu.",
-        ref_4: "Jones (2024): 4. Boyut: Resilience & Durability.",
-        ref_5: "Barnes & Kilding (2015): Ekonomiyi geliştirme stratejileri."
+        ref_1: "Joyner & Coyle (2008): Endurance performance determinants.",
+        ref_2: "Bassett & Howley (2000): Limiting factors for VO2max.",
+        ref_3: "Saunders et al. (2004): Running economy optimization.",
+        ref_4: "Jones (2006): The physiology of the world record holder (Women's Marathon).",
+        ref_5: "Jones (2024): The 4th Dimension: Resilience & Durability.",
+        ref_6: "Barnes & Kilding (2015): Strategies to improve economy."
     };
 
     const en = {
-        title: "Key Factors Affecting Running Performance",
-        subtitle: "Literature highlights 4 fundamental factors affecting running performance.",
-        validity: "Validity: 1500m - Ultra Marathon (Aerobic Dominant Runs)",
+        title: "Factors Affecting Running Performance",
+        subtitle: "The classic physiological model (3 factors) plus the modern 4th dimension (durability).",
+        validity: "Validity: 3000m - Marathon (Aerobic Dominant)",
         
         // 4 Pillars
         vo2_title: "VO₂max",
         vo2_sub: "OXYGEN UPTAKE CEILING",
-        vo2_desc: "The upper limit of aerobic capacity. Like a car's engine size, it determines potential.",
+        vo2_desc: "The upper limit of aerobic capacity. Determines potential but not the winner alone.",
         
-        threshold_title: "% Threshold",
-        threshold_sub: "SUSTAINABILITY",
-        threshold_desc: "What percentage of your capacity can you use without 'blowing up'?",
+        threshold_title: "Fractional Utilization",
+        threshold_sub: "%VO₂max @ THRESHOLD",
+        threshold_desc: "What percentage of your capacity can you sustain with metabolic stability?",
         
-        economy_title: "Economy",
+        economy_title: "Economy (Cr)",
         economy_sub: "EFFICIENCY",
-        economy_desc: "How much energy (fuel) do you consume at a given speed?",
+        economy_desc: "How much oxygen/energy do you consume at a given speed?",
         
-        resilience_title: "Resilience",
-        resilience_sub: "DURABILITY",
-        resilience_desc: "The ability to maintain performance despite fatigue late in the race.",
+        resilience_title: "Durability",
+        resilience_sub: "RESISTANCE TO FATIGUE",
+        resilience_desc: "The ability to resist deterioration (drift) in physiological parameters as the race progresses.",
 
         // Formula Area
-        eq_title: "THE PERFORMANCE EQUATION",
-        eq_desc: "Velocity (v) is your sustainable aerobic power divided by the cost of running (Cr). Resilience protects this equation over time.",
+        eq_title: "PERFORMANCE EQUATION (TIME DEPENDENT)",
+        eq_desc: "Velocity (v) is your current sustainable aerobic power divided by the cost of running (Cr).",
+        eq_note: "Note: Using VO₂max (ml/kg/min) and Cr (ml/kg/km) results in speed in m/min.",
+
         resilience_factor_title: "Resilience Factor:",
-        resilience_factor_desc: "This formula applies to a 'fresh' runner. In Marathons or Ultras, as hours pass, <strong>Cr (Cost)</strong> increases and <strong>%LT</strong> decreases. Resilience minimizes this decay, preserving your speed until the finish line.",
+        resilience_factor_text_1: "Adding the",
+        resilience_factor_highlight_time: "time variable (t)",
+        resilience_factor_text_2: "reveals the real-world scenario. Late in a marathon, due to fatigue,",
+        resilience_factor_highlight_1: "Cr (Cost) increases",
+        resilience_factor_text_3: "and",
+        resilience_factor_highlight_2: "Fractional Utilization drops",
+        resilience_factor_text_4: ". Resilience is the ability to minimize this drift.",
 
         // References
         ref_title: "REFERENCES (LITERATURE)",
         ref_1: "Joyner & Coyle (2008): Endurance performance determinants.",
         ref_2: "Bassett & Howley (2000): Limiting factors for VO2max.",
         ref_3: "Saunders et al. (2004): Running economy optimization.",
-        ref_4: "Jones (2024): The 4th Dimension: Resilience & Durability.",
-        ref_5: "Barnes & Kilding (2015): Strategies to improve economy."
+        ref_4: "Jones (2006): The physiology of the world record holder (Women's Marathon).",
+        ref_5: "Jones (2024): The 4th Dimension: Resilience & Durability.",
+        ref_6: "Barnes & Kilding (2015): Strategies to improve economy."
     };
 
     const t = lang === 'tr' ? tr : en;
@@ -173,20 +191,29 @@ const RunningPerformancePage = ({ lang }) => {
                         <p className="text-slate-500 text-xs mb-4 max-w-prose">
                             {t.eq_desc}
                         </p>
+                        <p className="text-slate-600 text-[10px] italic">
+                            {t.eq_note}
+                        </p>
                     </div>
 
-                    {/* LaTeX Formülü */}
+                    {/* LaTeX Formülü (Zamana Bağlı) */}
                     <div className="bg-black/30 px-6 py-4 rounded-xl border border-white/5 text-lg md:text-xl text-emerald-300 overflow-x-auto min-w-[200px] text-center shadow-lg">
-                        {`$$ v = \\frac{VO_{2max} \\times \\%LT}{Cr} $$`}
+                        {`$$ v(t) = \\frac{VO_{2max} \\times f_{util}(t)}{Cr(t)} $$`}
                     </div>
                 </div>
 
-                {/* Resilience Açıklaması */}
+                {/* Resilience Açıklaması (Safe JSX) */}
                 <div className="mt-6 pt-6 border-t border-slate-800 flex items-start gap-3">
                     <div className="mt-1 text-amber-400 shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
                     </div>
-                    <p className="text-xs text-slate-400 leading-relaxed" dangerouslySetInnerHTML={{__html: `<strong class="text-amber-400">${t.resilience_factor_title}</strong> ${t.resilience_factor_desc}`}}></p>
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                        <strong className="text-amber-400 block mb-1">{t.resilience_factor_title}</strong>
+                        {t.resilience_factor_text_1} <span className="text-emerald-300 font-mono">{t.resilience_factor_highlight_time}</span> {t.resilience_factor_text_2}{" "}
+                        <span className="text-rose-400 font-bold">{t.resilience_factor_highlight_1}</span> {t.resilience_factor_text_3}{" "}
+                        <span className="text-rose-400 font-bold">{t.resilience_factor_highlight_2}</span>
+                        {t.resilience_factor_text_4}
+                    </p>
                 </div>
             </div>
 
@@ -194,11 +221,11 @@ const RunningPerformancePage = ({ lang }) => {
             <div className="w-full border-t border-slate-700/50 pt-8">
                 <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">{t.ref_title}</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
-                    {[t.ref_1, t.ref_2, t.ref_3, t.ref_4, t.ref_5].map((ref, idx) => {
-                        const colors = ["bg-cyan-500", "bg-rose-500", "bg-emerald-500", "bg-amber-500", "bg-purple-500"];
+                    {[t.ref_1, t.ref_2, t.ref_3, t.ref_4, t.ref_5, t.ref_6].map((ref, idx) => {
+                        const colors = ["bg-cyan-500", "bg-rose-500", "bg-emerald-500", "bg-amber-500", "bg-purple-500", "bg-blue-500"];
                         return (
                             <div key={idx} className="text-[11px] text-slate-500 flex items-center">
-                                <span className={`w-1.5 h-1.5 ${colors[idx]} rounded-full mr-2 opacity-70`}></span>
+                                <span className={`w-1.5 h-1.5 ${colors[idx % colors.length]} rounded-full mr-2 opacity-70`}></span>
                                 <span>{ref}</span>
                             </div>
                         )
