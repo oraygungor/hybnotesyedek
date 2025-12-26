@@ -1,8 +1,7 @@
 const HyroxCalculatorPage = ({ lang, activeTheme }) => {
-    // React hook'larını buradan çekiyoruz (Vanilla React yapısına uygun)
-    const { useState, useMemo, useEffect } = React;
+    const { useState, useMemo } = React;
 
-    // --- SABİTLER VE VERİLER ---
+    // --- VERİ VE SABİTLER ---
     const STATION_DATA = {
         run1: { defaultTime: 270, p10: 210, p90: 380, min: 180, max: 480 },
         run2: { defaultTime: 280, p10: 215, p90: 390, min: 180, max: 480 },
@@ -79,7 +78,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
         }
     };
 
-    // --- YARDIMCI METOTLAR ---
+    // --- HELPER FUNCTIONS ---
     const formatMMSS = (seconds) => {
         const m = Math.floor(seconds / 60);
         const s = Math.floor(seconds % 60);
@@ -124,7 +123,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
     const [syncInput, setSyncInput] = useState("");
     const t = TRANSLATIONS[lang];
 
-    // --- HESAPLAMALAR ---
+    // --- CALCULATIONS ---
     const stats = useMemo(() => {
         let runSum = 0, workSum = 0, roxSum = 0;
         
@@ -148,7 +147,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
         };
     }, [values]);
 
-    // --- EVENT HANDLERS ---
+    // --- HANDLERS ---
     const handleSliderChange = (key, val) => {
         setValues(prev => ({ ...prev, [key]: parseInt(val, 10) }));
     };
@@ -161,8 +160,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
             const next = { ...prev };
             for (let i = 1; i <= 8; i++) {
                 let adjusted = seconds;
-                // 8. koşu genellikle yorgunluktan %10 yavaş olur
-                if (i === 8) adjusted = seconds * 1.1;
+                if (i === 8) adjusted = seconds * 1.1; // 8. koşu biraz daha yavaş
                 
                 const key = `run${i}`;
                 const limit = STATION_DATA[key];
@@ -172,7 +170,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
         });
     };
 
-    // --- BİLEŞEN PARÇALARI ---
+    // --- SUB-COMPONENTS ---
     const SliderGroup = ({ keys, title, colorClass }) => (
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden">
              <div className={`absolute top-0 right-0 w-32 h-32 ${colorClass} rounded-full mix-blend-multiply filter blur-3xl opacity-5 pointer-events-none`}></div>
@@ -215,10 +213,9 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
         </section>
     );
 
-    // --- ANA RENDER ---
     return (
         <div className="animate-fade-in space-y-8 pb-20">
-            {/* Başlık */}
+            {/* Header */}
             <div className="text-center mb-10 space-y-2">
                 <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white mb-2">
                     <span className="text-amber-400">HYROX</span> Simulator
@@ -229,7 +226,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* Sol Taraf: Kontroller */}
+                {/* Sol Taraf: Inputlar */}
                 <div className="lg:col-span-8 space-y-8">
                     {/* Koşular */}
                     <div className="relative">
@@ -262,7 +259,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                         colorClass="bg-indigo-500" 
                     />
 
-                    {/* Roxzone - Özel Tekil Bölüm */}
+                    {/* Roxzone */}
                     <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-5 pointer-events-none"></div>
                         <h2 className="text-2xl font-black mb-6 flex items-center gap-2 text-cyan-400">
@@ -292,7 +289,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                     </section>
                 </div>
 
-                {/* Sağ Taraf: Sonuç Paneli (Sticky) */}
+                {/* Sağ Taraf: Sonuç Paneli */}
                 <div className="lg:col-span-4">
                     <div className="bg-slate-800 rounded-2xl border-t-4 border-t-amber-500 border-x border-b border-slate-700 p-8 shadow-2xl lg:sticky lg:top-24">
                         <h2 className="text-lg font-bold text-center mb-8 uppercase tracking-[0.2em] text-slate-400">
@@ -347,5 +344,5 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
     );
 };
 
-// Global erişim için window'a ata
+// Global erişim için window'a ata (App.js bu şekilde erişecek)
 window.HyroxCalculatorPage = HyroxCalculatorPage;
