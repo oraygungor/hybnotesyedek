@@ -1,4 +1,7 @@
-const { useState, useEffect, useMemo, useRef } = React;
+{
+type: "file",
+fileName: "App.js",
+content: `const { useState, useEffect, useMemo, useRef } = React;
 
 const THEMES = [
     { id: 'cyan', name: 'Turkuaz', rgb: '6 182 212', hex: '#06b6d4' },
@@ -12,6 +15,15 @@ const THEMES = [
     { id: 'indigo', name: 'İndigo', rgb: '99 102 241', hex: '#6366f1' },
     { id: 'emerald', name: 'Zümrüt', rgb: '16 185 129', hex: '#10b981' },
 ];
+
+// Özel Hyrox Logosu
+const HyroxLogo = ({ size = 20, className = "" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <path d="M4 4l16 16" />
+        <path d="M4 20l16 -16" />
+        <path d="M4 12h16" strokeWidth="1.5" strokeOpacity="0.5" />
+    </svg>
+);
 
 const App = () => {
     // --- VERİLERİ HARİCİ DOSYADAN (Data.js) AL ---
@@ -87,7 +99,7 @@ const App = () => {
                 </div>
                 <div className="p-6 md:p-12">
                     <div className="prose prose-invert prose-sm md:prose-lg max-w-none text-slate-300 leading-relaxed" 
-                        dangerouslySetInnerHTML={{ __html: article.content[lang].replace(/class='math-box'/g, `class="my-6 p-4 md:p-6 bg-slate-900 border-l-4 border-primary rounded-r-xl font-mono text-primary text-opacity-90 text-sm md:text-lg text-center shadow-inner italic"`) }} />
+                        dangerouslySetInnerHTML={{ __html: article.content[lang].replace(/class='math-box'/g, \`class="my-6 p-4 md:p-6 bg-slate-900 border-l-4 border-primary rounded-r-xl font-mono text-primary text-opacity-90 text-sm md:text-lg text-center shadow-inner italic"\`) }} />
                 </div>
             </article>
         </div>
@@ -141,7 +153,7 @@ const App = () => {
                 <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center bg-slate-800/50 p-2 rounded-2xl border border-slate-700/50 backdrop-blur-sm">
                     <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto scrollbar-hide">
                         {categories.map(cat => (
-                            <button key={cat} onClick={() => setSelectedCategory(cat)} className={`whitespace-nowrap px-4 py-2 rounded-lg text-sm font-bold transition-all ${selectedCategory === cat ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}>{cat === ALL_CATEGORY ? t.allCategories : cat}</button>
+                            <button key={cat} onClick={() => setSelectedCategory(cat)} className={\`whitespace-nowrap px-4 py-2 rounded-lg text-sm font-bold transition-all \${selectedCategory === cat ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-slate-400 hover:text-white hover:bg-slate-700'}\`}>{cat === ALL_CATEGORY ? t.allCategories : cat}</button>
                         ))}
                     </div>
                     <div className="flex items-center gap-2 border-l border-slate-700 pl-0 md:pl-4 w-full md:w-auto">
@@ -196,7 +208,7 @@ const App = () => {
                             <div><div className="flex items-center gap-2 text-blue-400 mb-2"><Icons.Info size={20} /><span className="text-xs font-bold uppercase tracking-wider">{lang === 'tr' ? 'Biliyor Muydunuz?' : 'Did You Know?'}</span></div>
                                 <div className="text-slate-500 text-[10px] font-bold uppercase mb-1">{currentFact ? currentFact.tag : '#Antrenman'}</div>
                                 <p className="text-slate-200 text-sm leading-relaxed italic">
-                                    {currentFact ? `"${currentFact.text[lang]}"` : '...'}
+                                    {currentFact ? \`"\${currentFact.text[lang]}"\` : '...'}
                                 </p>
                             </div>
                             <div className="mt-4 text-[10px] text-slate-600 font-mono tracking-widest uppercase">HybNotes Intelligence</div>
@@ -213,6 +225,15 @@ const App = () => {
         const MENU_ITEMS = [
             { id: 'home', title: lang === 'tr' ? 'Ana Sayfa' : 'Home', icon: Icons.Activity },
             { id: 'research', title: lang === 'tr' ? 'Kütüphane' : 'Library', icon: Icons.BookOpen },
+            { 
+                id: 'hyrox',
+                title: 'HYROX',
+                icon: HyroxLogo,
+                type: 'dropdown',
+                children: [
+                    { id: 'hyrox_calc', title: lang === 'tr' ? 'Süre Hesaplama' : 'Time Calculator', icon: Icons.Clock },
+                ]
+            },
             { 
                 id: 'running', 
                 title: lang === 'tr' ? 'Koşu' : 'Running', 
@@ -250,7 +271,7 @@ const App = () => {
                         <div className="hidden md:flex items-center gap-1">
                             {MENU_ITEMS.map((item) => (
                                 <div key={item.id} className="relative group">
-                                    <button onClick={() => !item.children && setActiveTab(item.id)} className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors ${activeTab === item.id ? 'text-primary bg-primary/10' : 'text-slate-400 hover:text-white'}`}><item.icon size={18} /> {item.title} {item.children && <Icons.ChevronDown size={14}/>}</button>
+                                    <button onClick={() => !item.children && setActiveTab(item.id)} className={\`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors \${activeTab === item.id ? 'text-primary bg-primary/10' : 'text-slate-400 hover:text-white'}\`}><item.icon size={18} /> {item.title} {item.children && <Icons.ChevronDown size={14}/>}</button>
                                     {item.children && (<div className="absolute top-full left-0 w-56 pt-2 hidden group-hover:block"><div className="bg-slate-800 border border-slate-700 rounded-xl shadow-xl overflow-hidden animate-fade-in">{item.children.map((subItem) => (<button key={subItem.id} onClick={() => { setActiveTab(subItem.id); setReadingArticle(null); }} className="w-full text-left px-4 py-3 rounded-lg font-medium text-slate-300 hover:bg-slate-700 hover:text-white flex items-center gap-3"><subItem.icon size={16} /> {subItem.title}</button>))}</div></div>)}
                                 </div>
                             ))}
@@ -258,17 +279,17 @@ const App = () => {
                         <div className="flex items-center gap-3">
                             <div className="relative">
                                 <button onClick={() => setShowPalette(!showPalette)} className="p-2 text-slate-400 hover:text-white rounded-lg transition-colors"><Icons.Palette size={20} /></button>
-                                {showPalette && (<div className="absolute top-full right-0 mt-2 p-2 bg-slate-800 border border-slate-700 rounded-xl shadow-xl grid grid-cols-4 gap-2 w-48 z-50">{THEMES.map(t => (<button key={t.id} onClick={() => { setActiveTheme(t); setShowPalette(false); }} className={`w-6 h-6 rounded-full border-2 ${activeTheme.id === t.id ? 'border-white scale-110' : 'border-transparent hover:scale-110'} transition-transform`} style={{ backgroundColor: t.hex }} title={t.name}></button>))}</div>)}
+                                {showPalette && (<div className="absolute top-full right-0 mt-2 p-2 bg-slate-800 border border-slate-700 rounded-xl shadow-xl grid grid-cols-4 gap-2 w-48 z-50">{THEMES.map(t => (<button key={t.id} onClick={() => { setActiveTheme(t); setShowPalette(false); }} className={\`w-6 h-6 rounded-full border-2 \${activeTheme.id === t.id ? 'border-white scale-110' : 'border-transparent hover:scale-110'} transition-transform\`} style={{ backgroundColor: t.hex }} title={t.name}></button>))}</div>)}
                             </div>
                             <div className="flex bg-slate-800 rounded-lg p-1 border border-slate-700">
-                                <button onClick={() => setLang('tr')} className={`px-2 py-1 text-xs font-bold rounded transition-colors ${lang === 'tr' ? 'bg-primary text-white' : 'text-slate-400 hover:text-white'}`}>TR</button>
-                                <button onClick={() => setLang('en')} className={`px-2 py-1 text-xs font-bold rounded transition-colors ${lang === 'en' ? 'bg-primary text-white' : 'text-slate-400 hover:text-white'}`}>EN</button>
+                                <button onClick={() => setLang('tr')} className={\`px-2 py-1 text-xs font-bold rounded transition-colors \${lang === 'tr' ? 'bg-primary text-white' : 'text-slate-400 hover:text-white'}\`}>TR</button>
+                                <button onClick={() => setLang('en')} className={\`px-2 py-1 text-xs font-bold rounded transition-colors \${lang === 'en' ? 'bg-primary text-white' : 'text-slate-400 hover:text-white'}\`}>EN</button>
                             </div>
                             <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2 text-slate-300 hover:text-primary">{isMenuOpen ? <Icons.X size={28} /> : <Icons.Menu size={28} />}</button>
                         </div>
                     </div>
                 </div>
-                {isMenuOpen && (<div className="md:hidden bg-slate-900 border-b border-slate-800 absolute w-full h-[calc(100vh-80px)] overflow-y-auto p-4 space-y-2 z-50">{MENU_ITEMS.map((item) => (<div key={item.id}>{item.children ? (<div className="bg-slate-800/50 rounded-xl p-2"><div className="px-4 py-2 text-xs font-bold text-slate-500 uppercase flex items-center gap-2"><item.icon size={14}/> {item.title}</div>{item.children.map(sub => (<button key={sub.id} onClick={() => {setActiveTab(sub.id); setIsMenuOpen(false);}} className={`w-full text-left px-4 py-3 rounded-lg font-medium text-slate-300 hover:bg-slate-700 ${activeTab === sub.id ? 'text-primary bg-primary/10' : ''}`}>{sub.title}</button>))}</div>) : (<button onClick={() => {setActiveTab(item.id); setIsMenuOpen(false);}} className={`w-full flex items-center gap-3 px-6 py-4 rounded-xl text-lg font-bold ${activeTab === item.id ? 'bg-primary text-slate-900' : 'text-slate-300 hover:bg-slate-800'}`}><item.icon size={24} /> {item.title}</button>)}</div>))}</div>)}
+                {isMenuOpen && (<div className="md:hidden bg-slate-900 border-b border-slate-800 absolute w-full h-[calc(100vh-80px)] overflow-y-auto p-4 space-y-2 z-50">{MENU_ITEMS.map((item) => (<div key={item.id}>{item.children ? (<div className="bg-slate-800/50 rounded-xl p-2"><div className="px-4 py-2 text-xs font-bold text-slate-500 uppercase flex items-center gap-2"><item.icon size={14}/> {item.title}</div>{item.children.map(sub => (<button key={sub.id} onClick={() => {setActiveTab(sub.id); setIsMenuOpen(false);}} className={\`w-full text-left px-4 py-3 rounded-lg font-medium text-slate-300 hover:bg-slate-700 \${activeTab === sub.id ? 'text-primary bg-primary/10' : ''}\`}>{sub.title}</button>))}</div>) : (<button onClick={() => {setActiveTab(item.id); setIsMenuOpen(false);}} className={\`w-full flex items-center gap-3 px-6 py-4 rounded-xl text-lg font-bold \${activeTab === item.id ? 'bg-primary text-slate-900' : 'text-slate-300 hover:bg-slate-800'}\`}><item.icon size={24} /> {item.title}</button>)}</div>))}</div>)}
             </nav>
         );
     };
@@ -280,6 +301,7 @@ const App = () => {
             case 'utmb_lottery': return window.UTMBLotteryPage ? <window.UTMBLotteryPage lang={lang} /> : <div className="text-center p-10 text-slate-500">Loading module...</div>;
             case 'caffeine': return window.CaffeinePage ? <window.CaffeinePage lang={lang} activeTheme={activeTheme} /> : <div className="text-center p-10 text-slate-500">Loading module...</div>;
             case 'running_perf': return window.RunningPerformancePage ? <window.RunningPerformancePage lang={lang} /> : <div className="text-center p-10 text-slate-500">Loading module...</div>;
+            case 'hyrox_calc': return window.HyroxCalculatorPage ? <window.HyroxCalculatorPage lang={lang} /> : <div className="text-center p-10 text-slate-500">Loading module...</div>;
             default: return <HomePage changePage={setActiveTab} />;
         }
     };
@@ -294,3 +316,5 @@ const App = () => {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
+`
+}
