@@ -1,5 +1,6 @@
 const { useState, useEffect, useMemo, useRef } = React;
 
+// --- TEMA AYARLARI ---
 const THEMES = [
     { id: 'cyan', name: 'Turkuaz', rgb: '6 182 212', hex: '#06b6d4' },
     { id: 'red', name: 'Kırmızı', rgb: '239 68 68', hex: '#ef4444' },
@@ -14,7 +15,7 @@ const THEMES = [
 ];
 
 const App = () => {
-    // --- VERİLERİ HARİCİ DOSYADAN (Data.js) AL ---
+    // --- STATE TANIMLARI ---
     const [posts, setPosts] = useState(window.HybNotesData?.posts || []);
     const [facts, setFacts] = useState(window.HybNotesData?.facts || []);
     const [currentFact, setCurrentFact] = useState(null);
@@ -24,22 +25,21 @@ const App = () => {
     const [readingArticle, setReadingArticle] = useState(null);
     const [user, setUser] = useState(null);
     
-    // --- STATE INITIALIZATION WITH LOCALSTORAGE ---
+    // Dil ve Tema (LocalStorage)
     const [lang, setLang] = useState(() => localStorage.getItem('hybnotes_lang') || 'tr');
-    
     const [activeTheme, setActiveTheme] = useState(() => {
         const saved = localStorage.getItem('hybnotes_theme');
         return THEMES.find(t => t.id === saved) || THEMES[0];
     });
 
-    // Rastgele bir bilgi seç
+    // Rastgele Bilgi (Fact) Seçimi
     useEffect(() => {
         if (facts.length > 0 && !currentFact) {
             setCurrentFact(facts[Math.floor(Math.random() * facts.length)]);
         }
     }, [facts]);
 
-    // --- AUTH ---
+    // --- FIREBASE AUTH ---
     useEffect(() => {
         if (typeof firebase === 'undefined' || !firebase.apps.length) return;
         const initAuth = async () => {
@@ -56,7 +56,7 @@ const App = () => {
         return () => unsubscribe();
     }, []);
 
-    // --- SAVE SETTINGS (LocalStorage Priority) ---
+    // --- AYARLARI KAYDETME ---
     useEffect(() => {
         document.documentElement.style.setProperty('--primary-rgb', activeTheme.rgb);
         document.documentElement.lang = lang; 
@@ -66,11 +66,15 @@ const App = () => {
 
         if (user && typeof firebase !== 'undefined') {
             const db = firebase.firestore();
-            db.collection('artifacts').doc('hybnotes-app').collection('users').doc(user.uid).collection('user_prefs').doc('settings').set({ themeId: activeTheme.id, lang: lang }).catch(()=>{});
+            db.collection('artifacts').doc('hybnotes-app').collection('users').doc(user.uid)
+              .collection('user_prefs').doc('settings')
+              .set({ themeId: activeTheme.id, lang: lang }, { merge: true }).catch(()=>{});
         }
     }, [activeTheme, lang, user]);
 
-    // --- COMPONENTS ---
+    // --- ALT BİLEŞENLER (COMPONENTS) ---
+
+    // 1. Makale Detay Sayfası
     const ArticleDetail = ({ article, goBack, lang }) => (
         <div className="animate-fade-in pb-20">
             <button onClick={goBack} className="mb-6 flex items-center gap-2 text-slate-400 hover:text-primary transition-colors font-bold group text-sm md:text-base">
@@ -93,6 +97,7 @@ const App = () => {
         </div>
     );
 
+    // 2. Kütüphane (Research) Sayfası
     const ResearchPage = ({ posts, onSelect, lang }) => {
         const [searchTerm, setSearchTerm] = useState("");
         const ALL_CATEGORY = "ALL_CATEGORY"; 
@@ -163,6 +168,7 @@ const App = () => {
         );
     };
 
+    // 3. Yan Widget (Son Eklenenler)
     const LatestPostsWidget = ({ posts, onSelect, lang }) => {
         const latest = [...posts].sort((a, b) => b.id - a.id).slice(0, 3);
         const t = { title: lang === 'tr' ? 'Son Eklenenler' : 'Latest Posts', new: lang === 'tr' ? 'Yeni' : 'New', viewAll: lang === 'tr' ? 'Tümünü Gör' : 'View All' };
@@ -175,6 +181,7 @@ const App = () => {
         );
     };
 
+    // 4. Ana Sayfa
     const HomePage = ({ changePage, posts, onRead, lang, currentFact }) => {
         const latestPost = posts.length > 0 ? posts[0] : null;
         return (
@@ -208,53 +215,36 @@ const App = () => {
         );
     };
 
+    // 5. Üst Menü (NavBar)
     const NavBar = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen, activeTheme, setActiveTheme, lang, setLang }) => {
         const [showPalette, setShowPalette] = useState(false);
-       const MENU_ITEMS = [
-    { 
-        id: 'home', 
-        title: lang === 'tr' ? 'Ana Sayfa' : 'Home', 
-        icon: Icons.Activity 
-    },
-    { 
-        id: 'research', 
-        title: lang === 'tr' ? 'Kütüphane' : 'Library', 
-        icon: Icons.BookOpen 
-    },
-    // --- YENİ: KOŞU KATEGORİSİ ---
-    { 
-        id: 'running', 
-        title: lang === 'tr' ? 'Koşu' : 'Running', 
-        icon: Icons.TrendingUp, // İkon: Yükseliş/Performans
-        type: 'dropdown',
-        children: [
+        
+        // --- YENİLENMİŞ MENÜ YAPISI ---
+        const MENU_ITEMS = [
+            { id: 'home', title: lang === 'tr' ? 'Ana Sayfa' : 'Home', icon: Icons.Activity },
+            { id: 'research', title: lang === 'tr' ? 'Kütüphane' : 'Library', icon: Icons.BookOpen },
+            // KOŞU Kategorisi (Yeni)
             { 
-                id: 'running_perf', // Yeni modülümüz
-                title: lang === 'tr' ? 'Performans Modeli' : 'Performance Model', 
-                icon: Icons.Gauge // İkon: Hız göstergesi
+                id: 'running', 
+                title: lang === 'tr' ? 'Koşu' : 'Running', 
+                icon: Icons.TrendingUp, 
+                type: 'dropdown',
+                children: [
+                    { id: 'running_perf', title: lang === 'tr' ? 'Performans Modeli' : 'Performance Model', icon: Icons.Gauge },
+                    { id: 'utmb_lottery', title: lang === 'tr' ? 'UTMB Kura' : 'UTMB Lottery', icon: Icons.Ticket },
+                ]
             },
+            // ARAÇLAR Kategorisi (Diğer)
             { 
-                id: 'utmb_lottery', // Buraya taşıdık
-                title: lang === 'tr' ? 'UTMB Kura' : 'UTMB Lottery', 
-                icon: Icons.Ticket 
+                id: 'tools', 
+                title: lang === 'tr' ? 'Araçlar' : 'Tools', 
+                icon: Icons.Calculator,
+                type: 'dropdown',
+                children: [
+                    { id: 'caffeine', title: lang === 'tr' ? 'Kafein Stratejisi' : 'Caffeine Strategy', icon: Icons.Zap },
+                ]
             },
-        ]
-    },
-    // --- ARAÇLAR KATEGORİSİ (Genel) ---
-    { 
-        id: 'tools', 
-        title: lang === 'tr' ? 'Araçlar' : 'Tools', 
-        icon: Icons.Calculator,
-        type: 'dropdown',
-        children: [
-            { 
-                id: 'caffeine', 
-                title: lang === 'tr' ? 'Kafein Stratejisi' : 'Caffeine Strategy', 
-                icon: Icons.Zap 
-            },
-        ]
-    },
-];
+        ];
 
         return (
             <nav className="fixed top-0 w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
@@ -287,7 +277,8 @@ const App = () => {
         );
     };
 
- const renderContent = () => {
+    // 6. Sayfa İçeriğini Render Et
+    const renderContent = () => {
         switch (activeTab) {
             case 'home': 
                 return <HomePage changePage={setActiveTab} posts={posts} onRead={(post) => { setReadingArticle(post); setActiveTab('research'); }} lang={lang} currentFact={currentFact} />;
@@ -295,28 +286,21 @@ const App = () => {
             case 'research': 
                 return readingArticle ? <ArticleDetail article={readingArticle} goBack={() => setReadingArticle(null)} lang={lang} /> : <ResearchPage posts={posts} onSelect={(article) => { setReadingArticle(article); setActiveTab('research'); }} lang={lang} />;
             
-            // --- YENİ EKLENEN KOŞU PERFORMANSI ---
+            // YENİ EKLENEN KISIMLAR:
             case 'running_perf': 
-                return window.RunningPerformancePage 
-                    ? <window.RunningPerformancePage lang={lang} /> 
-                    : <div className="text-center p-20 text-slate-500 animate-pulse">Loading Performance Module...</div>;
+                return window.RunningPerformancePage ? <window.RunningPerformancePage lang={lang} /> : <div className="text-center p-20 text-slate-500 animate-pulse">Loading Performance Module...</div>;
             
-            // --- UTMB (Yeri değişti ama case ismi aynı kalabilir) ---
             case 'utmb_lottery': 
-                return window.UTMBLotteryPage 
-                    ? <window.UTMBLotteryPage lang={lang} /> 
-                    : <div className="text-center p-20 text-slate-500">Loading UTMB Module...</div>;
+                return window.UTMBLotteryPage ? <window.UTMBLotteryPage lang={lang} /> : <div className="text-center p-20 text-slate-500">Loading UTMB Module...</div>;
             
-            // --- KAFEİN ---
             case 'caffeine': 
-                return window.CaffeinePage 
-                    ? <window.CaffeinePage lang={lang} activeTheme={activeTheme} /> 
-                    : <div className="text-center p-20 text-slate-500">Loading Caffeine Module...</div>;
+                return window.CaffeinePage ? <window.CaffeinePage lang={lang} activeTheme={activeTheme} /> : <div className="text-center p-20 text-slate-500">Loading Caffeine Module...</div>;
             
             default: 
                 return <HomePage changePage={setActiveTab} posts={posts} onRead={(post) => { setReadingArticle(post); setActiveTab('research'); }} lang={lang} currentFact={currentFact} />;
         }
     };
+
     return (
         <div className="min-h-screen bg-slate-900 text-slate-200 font-sans selection:bg-primary/30">
             <NavBar activeTab={activeTab} setActiveTab={(tab) => { setActiveTab(tab); setReadingArticle(null); }} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} activeTheme={activeTheme} setActiveTheme={setActiveTheme} lang={lang} setLang={setLang} />
