@@ -1,5 +1,5 @@
 const RunningPerformancePage = ({ lang }) => {
-    const { useEffect, useState } = React;
+    const { useEffect } = React;
 
     const tr = {
         title: "Koşu Performansını Etkileyen Faktörler",
@@ -10,34 +10,37 @@ const RunningPerformancePage = ({ lang }) => {
         vo2_title: "VO₂max",
         vo2_sub: "OKSİJEN KULLANMA TAVANI",
         vo2_desc: "Aerobik kapasitenin üst limiti. Potansiyeli belirler ancak tek başına kazananı belirlemez.",
-        vo2_tooltip: "BENZETME: Bir arabanın motor hacmi (cc) gibidir. 5000cc motoru olan bir araba, 1600cc olandan daha hızlı gitme *potansiyeline* sahiptir. Ancak lastikleri kötüyse (ekonomi) veya motor hararet yapıyorsa (eşik) o gücü kullanamaz.",
+        vo2_tooltip: "Bir arabanın motor hacmi (cc) gibidir. 5000cc motoru olan bir araba, 1600cc olandan daha hızlı gitme potansiyeline sahiptir. Ancak lastikleri kötüyse (ekonomi) veya motor hararet yapıyorsa (sürdürülebilirlik) o gücü kullanamaz.",
         
         threshold_title: "Sürdürülebilirlik",
         threshold_sub: "%VO₂max KULLANIMI",
-        threshold_desc: "Mevcut kapasitenin yüzde kaçını 'patlamadan' (metabolik kararlılıkla) sürdürebiliyorsun?",
+        threshold_desc: "Genelde LT/VT/MLSS/CS civarında sürdürülebilen %VO₂max. Mevcut kapasitenin yüzde kaçını 'patlamadan' sürdürebiliyorsun?",
+        threshold_tooltip: "Arabanın devir saati gibidir. Motorun kırmızı çizgiye girmeden (asit birikmeden/metabolik kararlılıkla) çalışabileceği en yüksek devirdir. Bu devri ne kadar yüksek tutabilirseniz, o kadar uzun süre hızlı gidersiniz.",
         
         economy_title: "Ekonomi (Cr)",
         economy_sub: "VERİMLİLİK",
         economy_desc: "Belirli bir hızda koşarken ne kadar oksijen/enerji harcıyorsun?",
+        economy_tooltip: "Arabanın yakıt tüketimi veya aerodinamiği gibidir. Aynı hızda giden iki arabadan az yakan (ekonomik olan), daha az eforla daha uzağa gider. İyi teknik ve uygun ayakkabı bunu geliştirir.",
         
         resilience_title: "Durability",
-        resilience_sub: "ZAMANA BAĞLI DİRENÇ",
+        resilience_sub: "YORGUNLUK DİRENCİ",
         resilience_desc: "Yarış uzadıkça fizyolojik parametrelerin bozulmaya (drift) karşı direnci.",
+        resilience_tooltip: "Arabanın dayanıklılığı gibidir. Start çizgisinde herkes taze olabilir, ama 30. km'den sonra süspansiyon dağılıyor mu, motor su kaynatıyor mu? Performansın zamanla ne kadar az düştüğünü gösterir.",
 
         // Formül Alanı
         eq_title: "PERFORMANS DENKLEMİ (ZAMANA BAĞLI)",
         eq_desc: "Hız (v), o anki sürdürülebilir aerobik gücün, koşu maliyetine (Cr) bölümüdür.",
-        eq_note: "Not: Birim uyumu için VO₂max (ml/kg/dk) ve Cr (ml/kg/km) kullanıldığında hız m/dk cinsinden çıkar.",
+        eq_note: "Not: VO₂max (ml/kg/dk) ve Cr (ml/kg/km) ile hız km/dk çıkar (m/dk için ×1000).",
         eq_fractional_note: "*Fractional Utilization: VO₂max'ın ne kadarının eşik seviyesinde kullanılabildiğini gösteren oran.",
 
-        resilience_factor_title: "Resilience (Dayanıklılık) Faktörü:",
+        resilience_factor_title: "Durability (Yorgunluk Direnci) Faktörü:",
         resilience_factor_text_1: "Bu formüle",
         resilience_factor_highlight_time: "(t) zaman değişkeni",
         resilience_factor_text_2: "eklendiğinde gerçek hayat senaryosu ortaya çıkar. Maratonun sonlarına doğru yorgunlukla birlikte",
         resilience_factor_highlight_1: "Cr (Maliyet) artar",
         resilience_factor_text_3: "ve",
         resilience_factor_highlight_2: "Sürdürülebilirlik düşer",
-        resilience_factor_text_4: ". Resilience, bu düşüşü minimize etme yeteneğidir.",
+        resilience_factor_text_4: ". Durability, bu düşüşü minimize etme yeteneğidir.",
 
         // Referanslar
         ref_title: "REFERANSLAR (LİTERATÜR)",
@@ -58,34 +61,37 @@ const RunningPerformancePage = ({ lang }) => {
         vo2_title: "VO₂max",
         vo2_sub: "OXYGEN UPTAKE CEILING",
         vo2_desc: "The upper limit of aerobic capacity. Determines potential but not the winner alone.",
-        vo2_tooltip: "ANALOGY: It's like the engine displacement (cc) of a car. A 5000cc engine has the *potential* to go faster than a 1600cc one. But if the tires are bad (economy) or the engine overheats (threshold), it cannot use that power.",
+        vo2_tooltip: "It's like the engine displacement (cc) of a car. A 5000cc engine has the potential to go faster than a 1600cc one. But if the tires are bad (economy) or the engine overheats (sustainability), it cannot use that power.",
         
         threshold_title: "Sustainability",
         threshold_sub: "%VO₂max UTILIZATION",
-        threshold_desc: "What percentage of your capacity can you sustain with metabolic stability?",
+        threshold_desc: "Gen. %VO₂max sustained at LT/VT/MLSS/CS. What percentage of your capacity can you sustain with metabolic stability?",
+        threshold_tooltip: "It's like the RPM redline of a car. It's the highest intensity you can maintain without 'overheating' (metabolic instability). The higher you can push this percentage, the longer you can run fast.",
         
         economy_title: "Economy (Cr)",
         economy_sub: "EFFICIENCY",
         economy_desc: "How much oxygen/energy do you consume at a given speed?",
+        economy_tooltip: "It's like fuel efficiency or aerodynamics. Between two cars going at the same speed, the one burning less fuel (more economical) goes further with less effort. Good form and shoes improve this.",
         
         resilience_title: "Durability",
-        resilience_sub: "RESISTANCE TO FATIGUE",
+        resilience_sub: "FATIGUE RESISTANCE",
         resilience_desc: "The ability to resist deterioration (drift) in physiological parameters as the race progresses.",
+        resilience_tooltip: "It's like the durability of the car parts. Everyone is fresh at the start line, but does the suspension break down after 30km? It shows how little your performance drops over time.",
 
         // Formula Area
         eq_title: "PERFORMANCE EQUATION (TIME DEPENDENT)",
         eq_desc: "Velocity (v) is your current sustainable aerobic power divided by the cost of running (Cr).",
-        eq_note: "Note: Using VO₂max (ml/kg/min) and Cr (ml/kg/km) results in speed in m/min.",
+        eq_note: "Note: Using VO₂max (ml/kg/min) and Cr (ml/kg/km) results in speed in km/min (×1000 for m/min).",
         eq_fractional_note: "*Fractional Utilization: The fraction of VO₂max that can be sustained at threshold.",
 
-        resilience_factor_title: "Resilience Factor:",
+        resilience_factor_title: "Durability Factor:",
         resilience_factor_text_1: "Adding the",
         resilience_factor_highlight_time: "time variable (t)",
         resilience_factor_text_2: "reveals the real-world scenario. Late in a marathon, due to fatigue,",
         resilience_factor_highlight_1: "Cr (Cost) increases",
         resilience_factor_text_3: "and",
         resilience_factor_highlight_2: "Sustainability drops",
-        resilience_factor_text_4: ". Resilience is the ability to minimize this drift.",
+        resilience_factor_text_4: ". Durability is the ability to minimize this drift.",
 
         // References
         ref_title: "REFERENCES (LITERATURE)",
@@ -115,7 +121,7 @@ const RunningPerformancePage = ({ lang }) => {
     }, [lang]);
 
     return (
-        <div className="bg-slate-800 text-slate-200 rounded-3xl p-6 md:p-10 max-w-[1200px] mx-auto border border-slate-700 shadow-2xl animate-fade-in font-sans">
+        <div className="bg-slate-800 text-slate-200 rounded-3xl p-6 md:p-10 max-w-[1200px] mx-auto border border-slate-700 shadow-2xl font-sans">
             
             {/* Header */}
             <div className="text-center mb-10 w-full">
@@ -126,7 +132,7 @@ const RunningPerformancePage = ({ lang }) => {
                     {t.subtitle}
                 </p>
                 <div className="flex justify-center">
-                    <div className="bg-primary/10 border border-primary/20 text-primary text-xs px-3 py-1.5 rounded-lg flex items-center">
+                    <div className="bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs px-3 py-1.5 rounded-lg flex items-center">
                         <IconValid />
                         <span><strong>{t.validity}</strong></span>
                     </div>
@@ -136,12 +142,12 @@ const RunningPerformancePage = ({ lang }) => {
             {/* 4 Temel Sütun */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mb-10">
                 
-                {/* 1. VO2max - Tooltip ile */}
-                <div className="group relative bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors cursor-help">
+                {/* 1. VO2max - Tooltip ile (Erişilebilir) */}
+                <div tabIndex="0" className="group relative bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors cursor-help focus:outline-none focus:ring-2 focus:ring-sky-500/50">
                     {/* Tooltip */}
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                    <div role="tooltip" className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">
                         {t.vo2_tooltip}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-600"></div>
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
                     </div>
 
                     <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700 relative">
@@ -155,37 +161,58 @@ const RunningPerformancePage = ({ lang }) => {
                     </div>
                 </div>
 
-                {/* 2. Threshold - Sürdürülebilirlik */}
-                <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors">
-                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700">
+                {/* 2. Threshold - Sürdürülebilirlik - Tooltip ile (Erişilebilir) */}
+                <div tabIndex="0" className="group relative bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors cursor-help focus:outline-none focus:ring-2 focus:ring-rose-500/50">
+                    {/* Tooltip */}
+                    <div role="tooltip" className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">
+                        {t.threshold_tooltip}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
+                    </div>
+
+                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700 relative">
                         <IconFire />
+                        <div className="absolute -top-1 -right-1 bg-slate-700 rounded-full p-0.5"><IconInfo /></div>
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white">{t.threshold_title}</h3>
+                        <h3 className="text-lg font-bold text-white group-hover:text-rose-400 transition-colors">{t.threshold_title}</h3>
                         <div className="text-rose-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.threshold_sub}</div>
                         <p className="text-slate-400 text-xs leading-relaxed">{t.threshold_desc}</p>
                     </div>
                 </div>
 
-                {/* 3. Economy */}
-                <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors">
-                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700">
+                {/* 3. Economy - Tooltip ile (Erişilebilir) */}
+                <div tabIndex="0" className="group relative bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors cursor-help focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
+                    {/* Tooltip */}
+                    <div role="tooltip" className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">
+                        {t.economy_tooltip}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
+                    </div>
+
+                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700 relative">
                         <IconGear />
+                        <div className="absolute -top-1 -right-1 bg-slate-700 rounded-full p-0.5"><IconInfo /></div>
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white">{t.economy_title}</h3>
+                        <h3 className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">{t.economy_title}</h3>
                         <div className="text-emerald-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.economy_sub}</div>
                         <p className="text-slate-400 text-xs leading-relaxed">{t.economy_desc}</p>
                     </div>
                 </div>
 
-                {/* 4. Resilience */}
-                <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors">
-                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700">
+                {/* 4. Durability - Tooltip ile (Erişilebilir) */}
+                <div tabIndex="0" className="group relative bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors cursor-help focus:outline-none focus:ring-2 focus:ring-amber-500/50">
+                    {/* Tooltip */}
+                    <div role="tooltip" className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">
+                        {t.resilience_tooltip}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
+                    </div>
+
+                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700 relative">
                         <IconShield />
+                        <div className="absolute -top-1 -right-1 bg-slate-700 rounded-full p-0.5"><IconInfo /></div>
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white">{t.resilience_title}</h3>
+                        <h3 className="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">{t.resilience_title}</h3>
                         <div className="text-amber-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.resilience_sub}</div>
                         <p className="text-slate-400 text-xs leading-relaxed">{t.resilience_desc}</p>
                     </div>
@@ -195,7 +222,7 @@ const RunningPerformancePage = ({ lang }) => {
 
             {/* Denklem Bölümü */}
             <div className="w-full bg-slate-900 rounded-2xl p-6 md:p-8 border border-slate-800 mb-10 relative overflow-hidden shadow-inner">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none"></div>
                 
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="flex-1">
