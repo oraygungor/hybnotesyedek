@@ -1,13 +1,8 @@
-{
-type: "file",
-fileName: "js/HyroxCalculator.js",
-content: `
 const HyroxCalculatorPage = ({ lang, activeTheme }) => {
-    // --- REACT HOOKS ---
-    // Projenizdeki diğer dosyalardaki gibi React objesinden çekiyoruz
+    // React hook'larını buradan çekiyoruz (Vanilla React yapısına uygun)
     const { useState, useMemo, useEffect } = React;
 
-    // --- VERİ VE SABİTLER ---
+    // --- SABİTLER VE VERİLER ---
     const STATION_DATA = {
         run1: { defaultTime: 270, p10: 210, p90: 380, min: 180, max: 480 },
         run2: { defaultTime: 280, p10: 215, p90: 390, min: 180, max: 480 },
@@ -84,18 +79,18 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
         }
     };
 
-    // --- YARDIMCI FONKSİYONLAR ---
+    // --- YARDIMCI METOTLAR ---
     const formatMMSS = (seconds) => {
         const m = Math.floor(seconds / 60);
         const s = Math.floor(seconds % 60);
-        return \`\${String(m).padStart(2, '0')}:\${String(s).padStart(2, '0')}\`;
+        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     };
 
     const formatHHMMSS = (seconds) => {
         const h = Math.floor(seconds / 3600);
         const m = Math.floor((seconds % 3600) / 60);
         const s = Math.floor(seconds % 60);
-        return \`\${String(h).padStart(2, '0')}:\${String(m).padStart(2, '0')}:\${String(s).padStart(2, '0')}\`;
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
     };
 
     const parseTime = (timeStr) => {
@@ -153,7 +148,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
         };
     }, [values]);
 
-    // --- HANDLERS ---
+    // --- EVENT HANDLERS ---
     const handleSliderChange = (key, val) => {
         setValues(prev => ({ ...prev, [key]: parseInt(val, 10) }));
     };
@@ -169,7 +164,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                 // 8. koşu genellikle yorgunluktan %10 yavaş olur
                 if (i === 8) adjusted = seconds * 1.1;
                 
-                const key = \`run\${i}\`;
+                const key = `run${i}`;
                 const limit = STATION_DATA[key];
                 next[key] = Math.min(Math.max(adjusted, limit.min), limit.max);
             }
@@ -177,11 +172,11 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
         });
     };
 
-    // --- RENDER HELPERS ---
+    // --- BİLEŞEN PARÇALARI ---
     const SliderGroup = ({ keys, title, colorClass }) => (
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden">
-             <div className={\`absolute top-0 right-0 w-32 h-32 \${colorClass} rounded-full mix-blend-multiply filter blur-3xl opacity-5 pointer-events-none\`}></div>
-            <h2 className={\`text-2xl font-black mb-6 flex items-center gap-2 \${colorClass.replace('bg-', 'text-')}\`}>
+             <div className={`absolute top-0 right-0 w-32 h-32 ${colorClass} rounded-full mix-blend-multiply filter blur-3xl opacity-5 pointer-events-none`}></div>
+            <h2 className={`text-2xl font-black mb-6 flex items-center gap-2 ${colorClass.replace('bg-', 'text-')}`}>
                 {title}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
@@ -197,7 +192,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                                     {t.stations[key]}
                                 </label>
                                 <div className="flex items-center gap-2">
-                                    <span className={\`text-[10px] font-bold \${getPctColor(pct)}\`}>
+                                    <span className={`text-[10px] font-bold ${getPctColor(pct)}`}>
                                         {t.pct_prefix_station}{pct.toFixed(1)}
                                     </span>
                                     <span className="font-mono text-sm font-bold text-white bg-slate-900 px-2 py-0.5 rounded border border-slate-700 w-16 text-center">
@@ -220,9 +215,10 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
         </section>
     );
 
+    // --- ANA RENDER ---
     return (
         <div className="animate-fade-in space-y-8 pb-20">
-            {/* Header */}
+            {/* Başlık */}
             <div className="text-center mb-10 space-y-2">
                 <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white mb-2">
                     <span className="text-amber-400">HYROX</span> Simulator
@@ -276,7 +272,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                             <div className="flex justify-between items-end">
                                 <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t.stations.roxzone}</label>
                                 <div className="flex items-center gap-2">
-                                    <span className={\`text-[10px] font-bold \${getPctColor(stats.roxPct)}\`}>
+                                    <span className={`text-[10px] font-bold ${getPctColor(stats.roxPct)}`}>
                                         {t.pct_prefix_station}{stats.roxPct.toFixed(1)}
                                     </span>
                                     <span className="font-mono text-sm font-bold text-white bg-slate-900 px-2 py-0.5 rounded border border-slate-700 w-16 text-center">
@@ -308,7 +304,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                             <div className="text-6xl md:text-7xl font-black text-white leading-none tracking-tighter tabular-nums">
                                 {formatHHMMSS(stats.total)}
                             </div>
-                            <div className={\`mt-4 inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-slate-900 border \${getPctColor(stats.totalPct).replace('text-','border-')} \${getPctColor(stats.totalPct)}\`}>
+                            <div className={`mt-4 inline-block px-4 py-1.5 rounded-full text-sm font-bold bg-slate-900 border ${getPctColor(stats.totalPct).replace('text-','border-')} ${getPctColor(stats.totalPct)}`}>
                                 {t.pct_prefix_overall}{stats.totalPct.toFixed(1)}
                             </div>
                         </div>
@@ -319,7 +315,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                                     <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider block mb-1">{t.total_run_label}</span>
                                     <div className="text-xl font-bold font-mono text-white">{formatMMSS(stats.runSum)}</div>
                                 </div>
-                                <div className={\`text-xs font-bold \${getPctColor(stats.runPct)}\`}>%{stats.runPct.toFixed(1)}</div>
+                                <div className={`text-xs font-bold ${getPctColor(stats.runPct)}`}>%{stats.runPct.toFixed(1)}</div>
                             </div>
                             
                             <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-700/50 flex justify-between items-center group hover:bg-slate-900 transition-colors">
@@ -327,7 +323,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                                     <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block mb-1">{t.total_workout_label}</span>
                                     <div className="text-xl font-bold font-mono text-white">{formatMMSS(stats.workSum)}</div>
                                 </div>
-                                <div className={\`text-xs font-bold \${getPctColor(stats.workPct)}\`}>%{stats.workPct.toFixed(1)}</div>
+                                <div className={`text-xs font-bold ${getPctColor(stats.workPct)}`}>%{stats.workPct.toFixed(1)}</div>
                             </div>
 
                             <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-700/50 flex justify-between items-center group hover:bg-slate-900 transition-colors">
@@ -335,7 +331,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                                     <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block mb-1">{t.total_roxzone_label}</span>
                                     <div className="text-xl font-bold font-mono text-white">{formatMMSS(stats.roxSum)}</div>
                                 </div>
-                                <div className={\`text-xs font-bold \${getPctColor(stats.roxPct)}\`}>%{stats.roxPct.toFixed(1)}</div>
+                                <div className={`text-xs font-bold ${getPctColor(stats.roxPct)}`}>%{stats.roxPct.toFixed(1)}</div>
                             </div>
                         </div>
 
@@ -351,7 +347,5 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
     );
 };
 
-// Global erişim için window'a ata (App.js bu şekilde erişiyor)
+// Global erişim için window'a ata
 window.HyroxCalculatorPage = HyroxCalculatorPage;
-`
-}
