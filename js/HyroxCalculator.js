@@ -1,114 +1,182 @@
-const HyroxCalculatorPage = ({ lang, activeTheme }) => {
-    const { useState, useMemo } = React;
+import React, { useState, useMemo } from 'react';
 
-    // --- VERİ VE SABİTLER ---
-    const STATION_DATA = {
-        run1: { defaultTime: 270, p10: 210, p90: 380, min: 180, max: 480 },
-        run2: { defaultTime: 280, p10: 215, p90: 390, min: 180, max: 480 },
-        run3: { defaultTime: 290, p10: 220, p90: 400, min: 180, max: 500 },
-        run4: { defaultTime: 300, p10: 225, p90: 410, min: 180, max: 500 },
-        run5: { defaultTime: 300, p10: 230, p90: 420, min: 180, max: 500 },
-        run6: { defaultTime: 310, p10: 235, p90: 430, min: 180, max: 520 },
-        run7: { defaultTime: 310, p10: 240, p90: 440, min: 180, max: 520 },
-        run8: { defaultTime: 330, p10: 260, p90: 480, min: 180, max: 600 },
-        ws1: { defaultTime: 265, p10: 230, p90: 290, min: 180, max: 360 }, // Ski
-        ws2: { defaultTime: 170, p10: 120, p90: 280, min: 60, max: 420 },  // Push
-        ws3: { defaultTime: 280, p10: 200, p90: 460, min: 100, max: 600 }, // Pull
-        ws4: { defaultTime: 320, p10: 230, p90: 550, min: 120, max: 720 }, // Burpees
-        ws5: { defaultTime: 285, p10: 250, p90: 320, min: 200, max: 380 }, // Row
-        ws6: { defaultTime: 120, p10: 90,  p90: 180, min: 60, max: 240 },  // Farmers
-        ws7: { defaultTime: 290, p10: 200, p90: 520, min: 120, max: 720 }, // Lunges
-        ws8: { defaultTime: 380, p10: 270, p90: 620, min: 180, max: 900 }, // Wallballs
-        roxzone: { defaultTime: 360, p10: 270, p90: 660, min: 120, max: 1200 },
-    };
+// --- VERİ VE SABİTLER (Bileşen dışına alındı - Render yükünü azaltır) ---
+const STATION_DATA = {
+    run1: { defaultTime: 270, p10: 210, p90: 380, min: 180, max: 480 },
+    run2: { defaultTime: 280, p10: 215, p90: 390, min: 180, max: 480 },
+    run3: { defaultTime: 290, p10: 220, p90: 400, min: 180, max: 500 },
+    run4: { defaultTime: 300, p10: 225, p90: 410, min: 180, max: 500 },
+    run5: { defaultTime: 300, p10: 230, p90: 420, min: 180, max: 500 },
+    run6: { defaultTime: 310, p10: 235, p90: 430, min: 180, max: 520 },
+    run7: { defaultTime: 310, p10: 240, p90: 440, min: 180, max: 520 },
+    run8: { defaultTime: 330, p10: 260, p90: 480, min: 180, max: 600 },
+    ws1: { defaultTime: 265, p10: 230, p90: 290, min: 180, max: 360 }, // Ski
+    ws2: { defaultTime: 170, p10: 120, p90: 280, min: 60, max: 420 },  // Push
+    ws3: { defaultTime: 280, p10: 200, p90: 460, min: 100, max: 600 }, // Pull
+    ws4: { defaultTime: 320, p10: 230, p90: 550, min: 120, max: 720 }, // Burpees
+    ws5: { defaultTime: 285, p10: 250, p90: 320, min: 200, max: 380 }, // Row
+    ws6: { defaultTime: 120, p10: 90,  p90: 180, min: 60, max: 240 },  // Farmers
+    ws7: { defaultTime: 290, p10: 200, p90: 520, min: 120, max: 720 }, // Lunges
+    ws8: { defaultTime: 380, p10: 270, p90: 620, min: 180, max: 900 }, // Wallballs
+    roxzone: { defaultTime: 360, p10: 270, p90: 660, min: 120, max: 1200 },
+};
 
-    const BENCHMARKS = {
-        totalRun: { p10: 1800, p90: 3300 },
-        totalWork: { p10: 1800, p90: 3000 },
-        totalRox: { p10: 270,  p90: 660 },
-        totalAll: { p10: 4200, p90: 6800 }
-    };
+const BENCHMARKS = {
+    totalRun: { p10: 1800, p90: 3300 },
+    totalWork: { p10: 1800, p90: 3000 },
+    totalRox: { p10: 270,  p90: 660 },
+    totalAll: { p10: 4200, p90: 6800 }
+};
 
-    const TRANSLATIONS = {
-        tr: {
-            header: "HYROX Süre Hesaplama",
-            running_header: "Koşular (1km x 8)",
-            sync_placeholder: "04:30",
-            sync_button: "EŞİTLE",
-            workouts_header: "İstasyonlar",
-            roxzone_header: "Roxzone (Geçişler)",
-            results_header: "Tahmini Sonuç",
-            total_time_label: "Toplam Süre",
-            total_run_label: "Toplam Koşu",
-            total_workout_label: "Toplam İstasyon",
-            total_roxzone_label: "Toplam Roxzone",
-            pct_prefix_overall: "Genel: İlk %",
-            pct_prefix_station: "İlk %",
-            stations: {
-                run1: "1. Koşu", run2: "2. Koşu", run3: "3. Koşu", run4: "4. Koşu",
-                run5: "5. Koşu", run6: "6. Koşu", run7: "7. Koşu", run8: "8. Koşu",
-                ws1: "SkiErg", ws2: "Sled Push", ws3: "Sled Pull", ws4: "Burpees",
-                ws5: "Row", ws6: "Farmers", ws7: "Lunges", ws8: "Wall Balls",
-                roxzone: "Toplam Roxzone"
-            }
-        },
-        en: {
-            header: "HYROX Time Calculator",
-            running_header: "Runs (1km x 8)",
-            sync_placeholder: "04:30",
-            sync_button: "SYNC",
-            workouts_header: "Workouts",
-            roxzone_header: "Roxzone (Transitions)",
-            results_header: "Estimated Result",
-            total_time_label: "Total Time",
-            total_run_label: "Total Running",
-            total_workout_label: "Total Workouts",
-            total_roxzone_label: "Total Roxzone",
-            pct_prefix_overall: "Overall: Top %",
-            pct_prefix_station: "Top %",
-            stations: {
-                run1: "Run 1", run2: "Run 2", run3: "Run 3", run4: "Run 4",
-                run5: "Run 5", run6: "Run 6", run7: "Run 7", run8: "Run 8",
-                ws1: "SkiErg", ws2: "Sled Push", ws3: "Sled Pull", ws4: "Burpees",
-                ws5: "Row", ws6: "Farmers", ws7: "Lunges", ws8: "Wall Balls",
-                roxzone: "Total Roxzone"
-            }
+const TRANSLATIONS = {
+    tr: {
+        header: "HYROX Süre Hesaplama",
+        running_header: "Koşular (1km x 8)",
+        sync_placeholder: "04:30",
+        sync_button: "EŞİTLE",
+        workouts_header: "İstasyonlar",
+        roxzone_header: "Roxzone (Geçişler)",
+        results_header: "Tahmini Sonuç",
+        total_time_label: "Toplam Süre",
+        total_run_label: "Toplam Koşu",
+        total_workout_label: "Toplam İstasyon",
+        total_roxzone_label: "Toplam Roxzone",
+        pct_prefix_overall: "Genel: İlk %",
+        pct_prefix_station: "İlk %",
+        stations: {
+            run1: "1. Koşu", run2: "2. Koşu", run3: "3. Koşu", run4: "4. Koşu",
+            run5: "5. Koşu", run6: "6. Koşu", run7: "7. Koşu", run8: "8. Koşu",
+            ws1: "SkiErg", ws2: "Sled Push", ws3: "Sled Pull", ws4: "Burpees",
+            ws5: "Row", ws6: "Farmers", ws7: "Lunges", ws8: "Wall Balls",
+            roxzone: "Toplam Roxzone"
         }
-    };
+    },
+    en: {
+        header: "HYROX Time Calculator",
+        running_header: "Runs (1km x 8)",
+        sync_placeholder: "04:30",
+        sync_button: "SYNC",
+        workouts_header: "Workouts",
+        roxzone_header: "Roxzone (Transitions)",
+        results_header: "Estimated Result",
+        total_time_label: "Total Time",
+        total_run_label: "Total Running",
+        total_workout_label: "Total Workouts",
+        total_roxzone_label: "Total Roxzone",
+        pct_prefix_overall: "Overall: Top %",
+        pct_prefix_station: "Top %",
+        stations: {
+            run1: "Run 1", run2: "Run 2", run3: "Run 3", run4: "Run 4",
+            run5: "Run 5", run6: "Run 6", run7: "Run 7", run8: "Run 8",
+            ws1: "SkiErg", ws2: "Sled Push", ws3: "Sled Pull", ws4: "Burpees",
+            ws5: "Row", ws6: "Farmers", ws7: "Lunges", ws8: "Wall Balls",
+            roxzone: "Total Roxzone"
+        }
+    }
+};
 
-    // --- HELPER FUNCTIONS ---
-    const formatMMSS = (seconds) => {
-        const m = Math.floor(seconds / 60);
-        const s = Math.floor(seconds % 60);
-        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    };
+// --- HELPER FUNCTIONS (Bileşen dışına alındı) ---
+const formatMMSS = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+};
 
-    const formatHHMMSS = (seconds) => {
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
-        const s = Math.floor(seconds % 60);
-        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-    };
+const formatHHMMSS = (seconds) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+};
 
-    const parseTime = (timeStr) => {
-        if (!timeStr || !timeStr.includes(':')) return 0;
-        const [m, s] = timeStr.split(':').map(x => parseInt(x, 10));
-        return (m * 60) + (s || 0);
-    };
+const parseTime = (timeStr) => {
+    if (!timeStr || !timeStr.includes(':')) return 0;
+    const [m, s] = timeStr.split(':').map(x => parseInt(x, 10));
+    return (m * 60) + (s || 0);
+};
 
-    const calculatePercentile = (time, p10, p90) => {
-        const pct = 10 + ((time - p10) / (p90 - p10)) * 80;
-        return Math.min(Math.max(pct, 0.1), 99.9);
-    };
+const calculatePercentile = (time, p10, p90) => {
+    const pct = 10 + ((time - p10) / (p90 - p10)) * 80;
+    return Math.min(Math.max(pct, 0.1), 99.9);
+};
 
-    const getPctColor = (pct) => {
-        if (pct <= 10) return 'text-cyan-400';
-        if (pct <= 25) return 'text-green-400';
-        if (pct <= 50) return 'text-amber-400';
-        if (pct <= 75) return 'text-orange-400';
-        return 'text-rose-400';
-    };
+const getPctColor = (pct) => {
+    if (pct <= 10) return 'text-cyan-400';
+    if (pct <= 25) return 'text-green-400';
+    if (pct <= 50) return 'text-amber-400';
+    if (pct <= 75) return 'text-orange-400';
+    return 'text-rose-400';
+};
 
+// Slider Style
+const sliderStyle = {
+    WebkitAppearance: 'none',
+    width: '100%',
+    height: '6px',
+    background: '#334155', // slate-700
+    borderRadius: '3px',
+    outline: 'none',
+    cursor: 'pointer',
+    position: 'relative',
+    zIndex: 50
+};
+
+// --- SUB-COMPONENTS (Bileşen dışına alındı - ARTIK TAKILMAZ) ---
+const SliderGroup = ({ keys, title, colorClass, icon, values, onChange, t }) => (
+    <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden isolate">
+        <div className={`absolute -top-10 -right-10 w-48 h-48 ${colorClass} rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none -z-10`}></div>
+        
+        <h2 className={`text-2xl font-black mb-6 flex items-center gap-2 ${colorClass.replace('bg-', 'text-')} relative z-10`}>
+            {icon} {title}
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 relative z-10">
+            {keys.map(key => {
+                const data = STATION_DATA[key];
+                const val = values[key];
+                const pct = calculatePercentile(val, data.p10, data.p90);
+                
+                const accentColor = colorClass.includes('rose') ? 'accent-rose-500' 
+                                  : colorClass.includes('indigo') ? 'accent-indigo-500' 
+                                  : 'accent-cyan-400';
+
+                return (
+                    <div key={key} className="space-y-3 relative group">
+                        <div className="flex justify-between items-end">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-200 transition-colors">
+                                {t.stations[key]}
+                            </label>
+                            <div className="flex items-center gap-2">
+                                <span className={`text-[10px] font-bold ${getPctColor(pct)}`}>
+                                    {t.pct_prefix_station}{pct.toFixed(1)}
+                                </span>
+                                <span className="font-mono text-sm font-bold text-white bg-slate-900 px-3 py-1 rounded border border-slate-700 w-20 text-center shadow-inner">
+                                    {formatMMSS(val)}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div className="relative w-full h-6 flex items-center">
+                            <input 
+                                type="range" 
+                                min={data.min} 
+                                max={data.max} 
+                                value={val} 
+                                onChange={(e) => onChange(key, e.target.value)}
+                                style={sliderStyle}
+                                className={`w-full ${accentColor} hover:brightness-110 active:cursor-grabbing`}
+                            />
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    </section>
+);
+
+// --- MAIN COMPONENT ---
+const HyroxCalculatorPage = ({ lang = 'tr', activeTheme }) => {
+    
     // --- STATE ---
     const [values, setValues] = useState(() => {
         const initial = {};
@@ -119,7 +187,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
     });
     
     const [syncInput, setSyncInput] = useState("");
-    const t = TRANSLATIONS[lang];
+    const t = TRANSLATIONS[lang] || TRANSLATIONS['en'];
 
     // --- CALCULATIONS ---
     const stats = useMemo(() => {
@@ -158,7 +226,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
             const next = { ...prev };
             for (let i = 1; i <= 8; i++) {
                 let adjusted = seconds;
-                if (i === 8) adjusted = seconds * 1.1; // 8. koşu biraz daha yavaş
+                if (i === 8) adjusted = seconds * 1.1; 
                 
                 const key = `run${i}`;
                 const limit = STATION_DATA[key];
@@ -167,79 +235,6 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
             return next;
         });
     };
-
-    // --- SLIDER STYLE (ÖNEMLİ: CSS'i burada inline veriyoruz ki Tailwind ezmesin) ---
-    // Bu stil, slider'ın thumb (tutacak) kısmının her tarayıcıda düzgün görünmesini ve basılabilir olmasını sağlar.
-    const sliderStyle = {
-        WebkitAppearance: 'none',
-        width: '100%',
-        height: '6px',
-        background: '#334155', // slate-700
-        borderRadius: '3px',
-        outline: 'none',
-        cursor: 'pointer',
-        position: 'relative',
-        zIndex: 50 // En üstte kalması için
-    };
-
-    // --- SUB-COMPONENTS ---
-    // SliderGroup: Arka plan efektlerini kaldırdım veya CSS ile pointer-events:none yaptım.
-    // Ancak en garantisi slider'ı ayrı bir temiz div içine almaktır.
-    
-    const SliderGroup = ({ keys, title, colorClass, icon }) => (
-        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden isolate">
-             {/* Arka plan süsü - pointer-events-none ve düşük z-index ile tamamen etkisiz */}
-             <div className={`absolute -top-10 -right-10 w-48 h-48 ${colorClass} rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none -z-10`}></div>
-            
-            <h2 className={`text-2xl font-black mb-6 flex items-center gap-2 ${colorClass.replace('bg-', 'text-')} relative z-10`}>
-                {icon} {title}
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 relative z-10">
-                {keys.map(key => {
-                    const data = STATION_DATA[key];
-                    const val = values[key];
-                    const pct = calculatePercentile(val, data.p10, data.p90);
-                    
-                    // Slider rengi için dinamik class
-                    const accentColor = colorClass.includes('rose') ? 'accent-rose-500' 
-                                      : colorClass.includes('indigo') ? 'accent-indigo-500' 
-                                      : 'accent-cyan-400';
-
-                    return (
-                        <div key={key} className="space-y-3 relative group">
-                            <div className="flex justify-between items-end">
-                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-200 transition-colors">
-                                    {t.stations[key]}
-                                </label>
-                                <div className="flex items-center gap-2">
-                                    <span className={`text-[10px] font-bold ${getPctColor(pct)}`}>
-                                        {t.pct_prefix_station}{pct.toFixed(1)}
-                                    </span>
-                                    <span className="font-mono text-sm font-bold text-white bg-slate-900 px-3 py-1 rounded border border-slate-700 w-20 text-center shadow-inner">
-                                        {formatMMSS(val)}
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            {/* SLIDER YAPISI: Tamamen temizlendi */}
-                            <div className="relative w-full h-6 flex items-center">
-                                <input 
-                                    type="range" 
-                                    min={data.min} 
-                                    max={data.max} 
-                                    value={val} 
-                                    onChange={(e) => handleSliderChange(key, e.target.value)}
-                                    style={sliderStyle}
-                                    className={`w-full ${accentColor} hover:brightness-110 active:cursor-grabbing`}
-                                />
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-        </section>
-    );
 
     return (
         <div className="animate-fade-in space-y-8 pb-20">
@@ -270,11 +265,15 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                                 {t.sync_button}
                             </button>
                         </div>
+                        {/* ARTIK TAKILMAYACAK */}
                         <SliderGroup 
                             keys={['run1','run2','run3','run4','run5','run6','run7','run8']} 
                             title={t.running_header} 
                             colorClass="bg-rose-500"
                             icon={<span>🏃</span>}
+                            values={values}
+                            onChange={handleSliderChange}
+                            t={t}
                         />
                     </div>
 
@@ -284,9 +283,12 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                         title={t.workouts_header} 
                         colorClass="bg-indigo-500"
                         icon={<span>🏋️</span>}
+                        values={values}
+                        onChange={handleSliderChange}
+                        t={t}
                     />
 
-                    {/* Roxzone (Tekli olduğu için özel yapı) */}
+                    {/* Roxzone */}
                     <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden isolate">
                         <div className="absolute -top-10 -right-10 w-48 h-48 bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none -z-10"></div>
                         <h2 className="text-2xl font-black mb-6 flex items-center gap-2 text-cyan-400 relative z-10">
@@ -337,6 +339,7 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                         </div>
 
                         <div className="space-y-4">
+                            {/* Özetler */}
                             <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-700/50 flex justify-between items-center group hover:bg-slate-900 transition-colors">
                                 <div>
                                     <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider block mb-1">{t.total_run_label}</span>
@@ -360,12 +363,6 @@ const HyroxCalculatorPage = ({ lang, activeTheme }) => {
                                 </div>
                                 <div className={`text-xs font-bold ${getPctColor(stats.roxPct)}`}>%{stats.roxPct.toFixed(1)}</div>
                             </div>
-                        </div>
-
-                        <div className="mt-8 pt-6 border-t border-slate-700 text-center">
-                            <p className="text-[10px] text-slate-500 leading-relaxed italic">
-                                * Percentiles based on HYResult database statistics.
-                            </p>
                         </div>
                     </div>
                 </div>
