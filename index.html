@@ -71,4 +71,27 @@
         .pulse-path { stroke-dasharray: 100; stroke-dashoffset: 100; animation: drawPath 3s linear infinite; }
         @keyframes drawPath { 0% { stroke-dashoffset: 100; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
         /* Latex Formula Styling */
-        .latex-formula { display: flex; align-items: center; justify-content: center; font-family: "Times New Roman", Times, serif; font-size: 20px; color: #e
+        .latex-formula { display: flex; align-items: center; justify-content: center; font-family: "Times New Roman", Times, serif; font-size: 20px; color: #e2e8f0; margin: 15px 0; flex-wrap: wrap; }
+        .latex-formula .op { font-size: 20px; margin: 0 0.5em; color: #94a3b8; }
+        .product-notation { display: inline-grid; grid-template-areas: "upper" "symbol" "lower"; text-align: center; margin-right: 5px; }
+        .prod-symbol { grid-area: symbol; font-size: 38px; line-height: 1; color: rgb(var(--primary-rgb)); }
+        .prod-limit-upper { grid-area: upper; font-size: 12px; line-height: 1; }
+        .prod-limit-lower { grid-area: lower; font-size: 12px; line-height: 1; }
+        .fraction { display: inline-grid; grid-template-areas: "num" "den"; text-align: center; margin: 0 5px; }
+        .numerator { grid-area: num; padding: 3px 5px; font-family: ui-monospace, monospace; font-size: 16px; border-bottom: 1px solid #94a3b8; }
+        .denominator { grid-area: den; padding: 3px 5px; font-family: ui-monospace, monospace; font-size: 16px; }
+        .numerator span, .denominator span { color: rgb(var(--primary-rgb)); font-weight: 700; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <div id="root"></div>
+
+    <script type="text/babel" src="js/Shared.js"></script>
+    <script type="text/babel" src="js/UTMBLottery.js"></script>
+    <script type="text/babel" src="js/CaffeineStrategy.js"></script>
+    <script type="text/babel" src="js/RunningPerformance.js"></script>
+    <script type="text/babel" src="js/HyroxCalculator.js"></script>
+    <script type="text/babel" src="js/App.js"></script>
+    <script type="text/babel" src="js/Data.js"></script>
+</body>
+</html>
