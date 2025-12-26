@@ -220,7 +220,7 @@ const App = () => {
                 type: 'dropdown',
                 children: [
                     { id: 'utmb_lottery', title: lang === 'tr' ? 'UTMB Kura' : 'UTMB Lottery', icon: Icons.Ticket },
-                    { id: 'caffeine', title: 'Caffeine Strategy', icon: Icons.Zap },
+                    { id: 'caffeine', title: lang === 'tr' ? 'Kafein Stratejisi' : 'Caffeine Strategy', icon: Icons.Zap },
                 ]
             },
         ];
