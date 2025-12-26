@@ -15,14 +15,14 @@ const THEMES = [
 
 // --- ÖZEL HYROX LOGOSU (GÜNCELLENDİ: Daha kalın ve gerçekçi X) ---
 const HyroxLogo = ({ size = 20, className = "" }) => (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="currentColor" className={className}>
-        <polygon points="24.609,31.308 60.575,31.176 60.585,34.004 24.620,34.137" />
-        <polygon points="21.224,37.062 57.275,36.920 57.287,39.842 21.236,39.984" />
-        <polygon points="17.925,42.815 53.976,42.674 53.987,45.595 17.936,45.736" />
-        <polygon points="14.718,48.563 85.279,48.494 85.282,51.352 14.721,51.421" />
-        <polygon points="45.929,54.405 81.979,54.271 81.990,57.101 45.940,57.235" />
-        <polygon points="42.629,60.159 78.680,60.016 78.691,62.938 42.640,63.080" />
-        <polygon points="39.329,65.912 75.380,65.768 75.392,68.691 39.341,68.834" />
+    <svg width={size} height={size} viewBox="0 0 398 262" fill="currentColor" className={className}>
+        <polygon points="72,37 249,37 243,53 66,53" />
+        <polygon points="55,67 232,67 226,82 49,82" />
+        <polygon points="38,96 215,96 209,112 32,112" />
+        <polygon points="21,126 375,126 370,141 15,141" />
+        <polygon points="182,155 359,155 353,171 175,171" />
+        <polygon points="164,185 342,185 336,200 159,200" />
+        <polygon points="147,215 325,215 319,230 142,230" />
     </svg>
 );
 
