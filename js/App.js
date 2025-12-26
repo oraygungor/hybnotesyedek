@@ -214,14 +214,30 @@ const App = () => {
             { id: 'home', title: lang === 'tr' ? 'Ana Sayfa' : 'Home', icon: Icons.Activity },
             { id: 'research', title: lang === 'tr' ? 'Kütüphane' : 'Library', icon: Icons.BookOpen },
             { 
+                id: 'running', 
+                title: lang === 'tr' ? 'Koşu' : 'Running', 
+                icon: Icons.Activity,
+                type: 'dropdown',
+                children: [
+                    { id: 'running_perf', title: lang === 'tr' ? 'Performansın Temeli' : 'Performance Fundamentals', icon: Icons.Activity },
+                ]
+            },
+            { 
+                id: 'nutrition', 
+                title: lang === 'tr' ? 'Beslenme' : 'Nutrition', 
+                icon: Icons.Zap,
+                type: 'dropdown',
+                children: [
+                    { id: 'caffeine', title: lang === 'tr' ? 'Kafein Stratejisi' : 'Caffeine Strategy', icon: Icons.Zap },
+                ]
+            },
+            { 
                 id: 'tools', 
                 title: lang === 'tr' ? 'Araçlar' : 'Tools', 
                 icon: Icons.Calculator,
                 type: 'dropdown',
                 children: [
                     { id: 'utmb_lottery', title: lang === 'tr' ? 'UTMB Kura' : 'UTMB Lottery', icon: Icons.Ticket },
-                    { id: 'caffeine', title: lang === 'tr' ? 'Kafein Stratejisi' : 'Caffeine Strategy', icon: Icons.Zap },
-                    { id: 'running_perf', title: lang === 'tr' ? 'Koşu Bilimi' : 'Running Science', icon: Icons.Activity },
                 ]
             },
         ];
