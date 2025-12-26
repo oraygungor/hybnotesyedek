@@ -1,5 +1,28 @@
 const RunningPerformancePage = ({ lang }) => {
-    const { useEffect } = React;
+    // useState'i tekrar import ediyoruz
+    const { useEffect, useState } = React;
+    
+    // Hangi tooltip'in açık olduğunu tutan state (null = hepsi kapalı)
+    const [activeTooltip, setActiveTooltip] = useState(null);
+
+    // Dışarı tıklayınca tooltip'i kapatma
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            // Eğer tıklanan yer bir tooltip tetikleyicisi (karta ait) değilse kapat
+            if (!event.target.closest('.tooltip-trigger')) {
+                setActiveTooltip(null);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
+
+    // Tooltip aç/kapa fonksiyonu
+    const toggleTooltip = (id, e) => {
+        e.stopPropagation(); // Tıklamanın document'a gidip hemen kapatmasını engelle
+        setActiveTooltip(activeTooltip === id ? null : id);
+    };
 
     const tr = {
         title: "Koşu Performansını Etkileyen Faktörler",
@@ -15,7 +38,17 @@ const RunningPerformancePage = ({ lang }) => {
         threshold_title: "Sürdürülebilirlik",
         threshold_sub: "%VO₂max KULLANIMI",
         threshold_desc: "Genelde LT/VT/MLSS/CS civarında sürdürülebilen %VO₂max. Mevcut kapasitenin yüzde kaçını 'patlamadan' sürdürebiliyorsun?",
-        threshold_tooltip: "Arabanın devir saati gibidir. Motorun kırmızı çizgiye girmeden (asit birikmeden/metabolik kararlılıkla) çalışabileceği en yüksek devirdir. Bu devri ne kadar yüksek tutabilirseniz, o kadar uzun süre hızlı gidersiniz.",
+        threshold_tooltip: (
+            <>
+                <div className="mb-3">Arabanın devir saati gibidir. Motorun kırmızı çizgiye girmeden (asit birikmeden) çalışabileceği en yüksek devirdir.</div>
+                <div className="text-[10px] font-sans border-t border-slate-700 pt-2 space-y-1.5 opacity-90">
+                    <div><span className="text-rose-400 font-bold">LT (Lactate Threshold):</span> Laktatın kanda birikmeye başladığı ilk eşik.</div>
+                    <div><span className="text-rose-400 font-bold">VT (Ventilatory Threshold):</span> Solunumun derinleştiği solunum eşiği.</div>
+                    <div><span className="text-rose-400 font-bold">MLSS:</span> Maksimum Laktat Kararlı Durumu (üretim = atılım).</div>
+                    <div><span className="text-rose-400 font-bold">CS (Critical Speed):</span> Yorgunluk oluşmadan sürdürülebilen teorik hız sınırı.</div>
+                </div>
+            </>
+        ),
         
         economy_title: "Ekonomi (Cr)",
         economy_sub: "VERİMLİLİK",
@@ -42,6 +75,14 @@ const RunningPerformancePage = ({ lang }) => {
         resilience_factor_highlight_2: "Sürdürülebilirlik düşer",
         resilience_factor_text_4: ". Durability, bu düşüşü minimize etme yeteneğidir.",
 
+        // Fark Notu
+        diff_title: "💡 Önemli Fark: Endurance vs. Durability",
+        diff_desc: "Bu iki kavram sıklıkla karıştırılır:",
+        diff_endurance: "Endurance (Dayanıklılık):",
+        diff_endurance_ex: "\"3 saat koşabilirim.\" (Süre odaklı)",
+        diff_durability: "Durability (Yorgunluk Direnci):",
+        diff_durability_ex: "\"3. saatte de 1. saatteki kadar verimli ve hızlı koşabilirim.\" (Kalite ve bozulmama odaklı)",
+
         // Referanslar
         ref_title: "REFERANSLAR (LİTERATÜR)",
         ref_1: "Joyner & Coyle (2008): Endurance performance determinants.",
@@ -66,7 +107,17 @@ const RunningPerformancePage = ({ lang }) => {
         threshold_title: "Sustainability",
         threshold_sub: "%VO₂max UTILIZATION",
         threshold_desc: "Gen. %VO₂max sustained at LT/VT/MLSS/CS. What percentage of your capacity can you sustain with metabolic stability?",
-        threshold_tooltip: "It's like the RPM redline of a car. It's the highest intensity you can maintain without 'overheating' (metabolic instability). The higher you can push this percentage, the longer you can run fast.",
+        threshold_tooltip: (
+            <>
+                <div className="mb-3">It's like the RPM redline of a car. It's the highest intensity you can maintain without 'overheating' (metabolic instability).</div>
+                <div className="text-[10px] font-sans border-t border-slate-700 pt-2 space-y-1.5 opacity-90">
+                    <div><span className="text-rose-400 font-bold">LT (Lactate Threshold):</span> Point where lactate rises above baseline.</div>
+                    <div><span className="text-rose-400 font-bold">VT (Ventilatory Threshold):</span> Breathing rate inflection point.</div>
+                    <div><span className="text-rose-400 font-bold">MLSS:</span> Max Lactate Steady State (production = clearance).</div>
+                    <div><span className="text-rose-400 font-bold">CS (Critical Speed):</span> Theoretical max sustainable speed without fatigue.</div>
+                </div>
+            </>
+        ),
         
         economy_title: "Economy (Cr)",
         economy_sub: "EFFICIENCY",
@@ -92,6 +143,14 @@ const RunningPerformancePage = ({ lang }) => {
         resilience_factor_text_3: "and",
         resilience_factor_highlight_2: "Sustainability drops",
         resilience_factor_text_4: ". Durability is the ability to minimize this drift.",
+
+        // Difference Note
+        diff_title: "💡 Important Distinction: Endurance vs. Durability",
+        diff_desc: "These two concepts are often confused:",
+        diff_endurance: "Endurance:",
+        diff_endurance_ex: "\"I can run for 3 hours.\" (Duration focused)",
+        diff_durability: "Durability (Fatigue Resistance):",
+        diff_durability_ex: "\"I can run as efficiently and fast in hour 3 as I did in hour 1.\" (Quality and non-decay focused)",
 
         // References
         ref_title: "REFERENCES (LITERATURE)",
@@ -142,77 +201,89 @@ const RunningPerformancePage = ({ lang }) => {
             {/* 4 Temel Sütun */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mb-10">
                 
-                {/* 1. VO2max - Tooltip ile (Erişilebilir) */}
-                <div tabIndex="0" className="group relative bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors cursor-help focus:outline-none focus:ring-2 focus:ring-sky-500/50">
+                {/* 1. VO2max - Tooltip ile (Interaktif Toggle) */}
+                <div 
+                    onClick={(e) => toggleTooltip('vo2', e)}
+                    className={`tooltip-trigger group relative bg-slate-900/50 border rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 transition-all cursor-pointer ${activeTooltip === 'vo2' ? 'border-sky-500 bg-slate-800 ring-2 ring-sky-500/20' : 'border-slate-700/50 hover:bg-slate-800 hover:border-slate-600'}`}
+                >
                     {/* Tooltip */}
-                    <div role="tooltip" className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">
+                    <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 transition-all z-20 pointer-events-none ${activeTooltip === 'vo2' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
                         {t.vo2_tooltip}
                         <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
                     </div>
 
                     <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700 relative">
                         <IconLungs />
-                        <div className="absolute -top-1 -right-1 bg-slate-700 rounded-full p-0.5"><IconInfo /></div>
+                        <div className={`absolute -top-1 -right-1 rounded-full p-0.5 transition-colors ${activeTooltip === 'vo2' ? 'bg-sky-500 text-white' : 'bg-slate-700 text-slate-400'}`}><IconInfo /></div>
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">{t.vo2_title}</h3>
+                        <h3 className={`text-lg font-bold transition-colors ${activeTooltip === 'vo2' ? 'text-sky-400' : 'text-white'}`}>{t.vo2_title}</h3>
                         <div className="text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.vo2_sub}</div>
                         <p className="text-slate-400 text-xs leading-relaxed">{t.vo2_desc}</p>
                     </div>
                 </div>
 
-                {/* 2. Threshold - Sürdürülebilirlik - Tooltip ile (Erişilebilir) */}
-                <div tabIndex="0" className="group relative bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors cursor-help focus:outline-none focus:ring-2 focus:ring-rose-500/50">
+                {/* 2. Threshold - Sürdürülebilirlik - Tooltip ile (Interaktif Toggle) */}
+                <div 
+                    onClick={(e) => toggleTooltip('threshold', e)}
+                    className={`tooltip-trigger group relative bg-slate-900/50 border rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 transition-all cursor-pointer ${activeTooltip === 'threshold' ? 'border-rose-500 bg-slate-800 ring-2 ring-rose-500/20' : 'border-slate-700/50 hover:bg-slate-800 hover:border-slate-600'}`}
+                >
                     {/* Tooltip */}
-                    <div role="tooltip" className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">
+                    <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-80 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 transition-all z-20 pointer-events-none ${activeTooltip === 'threshold' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
                         {t.threshold_tooltip}
                         <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
                     </div>
 
                     <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700 relative">
                         <IconFire />
-                        <div className="absolute -top-1 -right-1 bg-slate-700 rounded-full p-0.5"><IconInfo /></div>
+                        <div className={`absolute -top-1 -right-1 rounded-full p-0.5 transition-colors ${activeTooltip === 'threshold' ? 'bg-rose-500 text-white' : 'bg-slate-700 text-slate-400'}`}><IconInfo /></div>
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white group-hover:text-rose-400 transition-colors">{t.threshold_title}</h3>
+                        <h3 className={`text-lg font-bold transition-colors ${activeTooltip === 'threshold' ? 'text-rose-400' : 'text-white'}`}>{t.threshold_title}</h3>
                         <div className="text-rose-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.threshold_sub}</div>
                         <p className="text-slate-400 text-xs leading-relaxed">{t.threshold_desc}</p>
                     </div>
                 </div>
 
-                {/* 3. Economy - Tooltip ile (Erişilebilir) */}
-                <div tabIndex="0" className="group relative bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors cursor-help focus:outline-none focus:ring-2 focus:ring-emerald-500/50">
+                {/* 3. Economy - Tooltip ile (Interaktif Toggle) */}
+                <div 
+                    onClick={(e) => toggleTooltip('economy', e)}
+                    className={`tooltip-trigger group relative bg-slate-900/50 border rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 transition-all cursor-pointer ${activeTooltip === 'economy' ? 'border-emerald-500 bg-slate-800 ring-2 ring-emerald-500/20' : 'border-slate-700/50 hover:bg-slate-800 hover:border-slate-600'}`}
+                >
                     {/* Tooltip */}
-                    <div role="tooltip" className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">
+                    <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 transition-all z-20 pointer-events-none ${activeTooltip === 'economy' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
                         {t.economy_tooltip}
                         <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
                     </div>
 
                     <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700 relative">
                         <IconGear />
-                        <div className="absolute -top-1 -right-1 bg-slate-700 rounded-full p-0.5"><IconInfo /></div>
+                        <div className={`absolute -top-1 -right-1 rounded-full p-0.5 transition-colors ${activeTooltip === 'economy' ? 'bg-emerald-500 text-white' : 'bg-slate-700 text-slate-400'}`}><IconInfo /></div>
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">{t.economy_title}</h3>
+                        <h3 className={`text-lg font-bold transition-colors ${activeTooltip === 'economy' ? 'text-emerald-400' : 'text-white'}`}>{t.economy_title}</h3>
                         <div className="text-emerald-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.economy_sub}</div>
                         <p className="text-slate-400 text-xs leading-relaxed">{t.economy_desc}</p>
                     </div>
                 </div>
 
-                {/* 4. Durability - Tooltip ile (Erişilebilir) */}
-                <div tabIndex="0" className="group relative bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors cursor-help focus:outline-none focus:ring-2 focus:ring-amber-500/50">
+                {/* 4. Durability - Tooltip ile (Interaktif Toggle) */}
+                <div 
+                    onClick={(e) => toggleTooltip('durability', e)}
+                    className={`tooltip-trigger group relative bg-slate-900/50 border rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 transition-all cursor-pointer ${activeTooltip === 'durability' ? 'border-amber-500 bg-slate-800 ring-2 ring-amber-500/20' : 'border-slate-700/50 hover:bg-slate-800 hover:border-slate-600'}`}
+                >
                     {/* Tooltip */}
-                    <div role="tooltip" className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity pointer-events-none z-10">
+                    <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 transition-all z-20 pointer-events-none ${activeTooltip === 'durability' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
                         {t.resilience_tooltip}
                         <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-900"></div>
                     </div>
 
                     <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700 relative">
                         <IconShield />
-                        <div className="absolute -top-1 -right-1 bg-slate-700 rounded-full p-0.5"><IconInfo /></div>
+                        <div className={`absolute -top-1 -right-1 rounded-full p-0.5 transition-colors ${activeTooltip === 'durability' ? 'bg-amber-500 text-white' : 'bg-slate-700 text-slate-400'}`}><IconInfo /></div>
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white group-hover:text-amber-400 transition-colors">{t.resilience_title}</h3>
+                        <h3 className={`text-lg font-bold transition-colors ${activeTooltip === 'durability' ? 'text-amber-400' : 'text-white'}`}>{t.resilience_title}</h3>
                         <div className="text-amber-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.resilience_sub}</div>
                         <p className="text-slate-400 text-xs leading-relaxed">{t.resilience_desc}</p>
                     </div>
@@ -256,6 +327,22 @@ const RunningPerformancePage = ({ lang }) => {
                         <span className="text-rose-400 font-bold">{t.resilience_factor_highlight_2}</span>
                         {t.resilience_factor_text_4}
                     </p>
+                </div>
+            </div>
+
+            {/* Fark Notu */}
+            <div className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 mb-10 text-xs">
+                <h4 className="font-bold text-slate-300 mb-3">{t.diff_title}</h4>
+                <p className="text-slate-500 mb-4">{t.diff_desc}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                        <div className="text-cyan-400 font-bold mb-1">{t.diff_endurance}</div>
+                        <div className="text-slate-400 italic">{t.diff_endurance_ex}</div>
+                    </div>
+                    <div className="bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                        <div className="text-amber-400 font-bold mb-1">{t.diff_durability}</div>
+                        <div className="text-slate-400 italic">{t.diff_durability_ex}</div>
+                    </div>
                 </div>
             </div>
 
