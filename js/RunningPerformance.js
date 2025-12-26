@@ -1,5 +1,5 @@
 const RunningPerformancePage = ({ lang }) => {
-    const { useEffect } = React;
+    const { useEffect, useState } = React;
 
     const tr = {
         title: "Koşu Performansını Etkileyen Faktörler",
@@ -10,9 +10,10 @@ const RunningPerformancePage = ({ lang }) => {
         vo2_title: "VO₂max",
         vo2_sub: "OKSİJEN KULLANMA TAVANI",
         vo2_desc: "Aerobik kapasitenin üst limiti. Potansiyeli belirler ancak tek başına kazananı belirlemez.",
+        vo2_tooltip: "BENZETME: Bir arabanın motor hacmi (cc) gibidir. 5000cc motoru olan bir araba, 1600cc olandan daha hızlı gitme *potansiyeline* sahiptir. Ancak lastikleri kötüyse (ekonomi) veya motor hararet yapıyorsa (eşik) o gücü kullanamaz.",
         
-        threshold_title: "Fractional Utilization",
-        threshold_sub: "%VO₂max @ EŞİK",
+        threshold_title: "Sürdürülebilirlik",
+        threshold_sub: "%VO₂max KULLANIMI",
         threshold_desc: "Mevcut kapasitenin yüzde kaçını 'patlamadan' (metabolik kararlılıkla) sürdürebiliyorsun?",
         
         economy_title: "Ekonomi (Cr)",
@@ -27,6 +28,7 @@ const RunningPerformancePage = ({ lang }) => {
         eq_title: "PERFORMANS DENKLEMİ (ZAMANA BAĞLI)",
         eq_desc: "Hız (v), o anki sürdürülebilir aerobik gücün, koşu maliyetine (Cr) bölümüdür.",
         eq_note: "Not: Birim uyumu için VO₂max (ml/kg/dk) ve Cr (ml/kg/km) kullanıldığında hız m/dk cinsinden çıkar.",
+        eq_fractional_note: "*Fractional Utilization: VO₂max'ın ne kadarının eşik seviyesinde kullanılabildiğini gösteren oran.",
 
         resilience_factor_title: "Resilience (Dayanıklılık) Faktörü:",
         resilience_factor_text_1: "Bu formüle",
@@ -34,7 +36,7 @@ const RunningPerformancePage = ({ lang }) => {
         resilience_factor_text_2: "eklendiğinde gerçek hayat senaryosu ortaya çıkar. Maratonun sonlarına doğru yorgunlukla birlikte",
         resilience_factor_highlight_1: "Cr (Maliyet) artar",
         resilience_factor_text_3: "ve",
-        resilience_factor_highlight_2: "Fractional Utilization düşer",
+        resilience_factor_highlight_2: "Sürdürülebilirlik düşer",
         resilience_factor_text_4: ". Resilience, bu düşüşü minimize etme yeteneğidir.",
 
         // Referanslar
@@ -56,9 +58,10 @@ const RunningPerformancePage = ({ lang }) => {
         vo2_title: "VO₂max",
         vo2_sub: "OXYGEN UPTAKE CEILING",
         vo2_desc: "The upper limit of aerobic capacity. Determines potential but not the winner alone.",
+        vo2_tooltip: "ANALOGY: It's like the engine displacement (cc) of a car. A 5000cc engine has the *potential* to go faster than a 1600cc one. But if the tires are bad (economy) or the engine overheats (threshold), it cannot use that power.",
         
-        threshold_title: "Fractional Utilization",
-        threshold_sub: "%VO₂max @ THRESHOLD",
+        threshold_title: "Sustainability",
+        threshold_sub: "%VO₂max UTILIZATION",
         threshold_desc: "What percentage of your capacity can you sustain with metabolic stability?",
         
         economy_title: "Economy (Cr)",
@@ -73,6 +76,7 @@ const RunningPerformancePage = ({ lang }) => {
         eq_title: "PERFORMANCE EQUATION (TIME DEPENDENT)",
         eq_desc: "Velocity (v) is your current sustainable aerobic power divided by the cost of running (Cr).",
         eq_note: "Note: Using VO₂max (ml/kg/min) and Cr (ml/kg/km) results in speed in m/min.",
+        eq_fractional_note: "*Fractional Utilization: The fraction of VO₂max that can be sustained at threshold.",
 
         resilience_factor_title: "Resilience Factor:",
         resilience_factor_text_1: "Adding the",
@@ -80,7 +84,7 @@ const RunningPerformancePage = ({ lang }) => {
         resilience_factor_text_2: "reveals the real-world scenario. Late in a marathon, due to fatigue,",
         resilience_factor_highlight_1: "Cr (Cost) increases",
         resilience_factor_text_3: "and",
-        resilience_factor_highlight_2: "Fractional Utilization drops",
+        resilience_factor_highlight_2: "Sustainability drops",
         resilience_factor_text_4: ". Resilience is the ability to minimize this drift.",
 
         // References
@@ -101,6 +105,7 @@ const RunningPerformancePage = ({ lang }) => {
     const IconGear = () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-emerald-400"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>;
     const IconShield = () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-amber-400"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
     const IconValid = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+    const IconInfo = () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>;
 
     // MathJax Tetikleyici
     useEffect(() => {
@@ -131,19 +136,26 @@ const RunningPerformancePage = ({ lang }) => {
             {/* 4 Temel Sütun */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mb-10">
                 
-                {/* 1. VO2max */}
-                <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors">
-                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700">
+                {/* 1. VO2max - Tooltip ile */}
+                <div className="group relative bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors cursor-help">
+                    {/* Tooltip */}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-3 bg-slate-900 border border-slate-600 rounded-lg shadow-xl text-xs text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                        {t.vo2_tooltip}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-600"></div>
+                    </div>
+
+                    <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700 relative">
                         <IconLungs />
+                        <div className="absolute -top-1 -right-1 bg-slate-700 rounded-full p-0.5"><IconInfo /></div>
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white">{t.vo2_title}</h3>
+                        <h3 className="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors">{t.vo2_title}</h3>
                         <div className="text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-1">{t.vo2_sub}</div>
                         <p className="text-slate-400 text-xs leading-relaxed">{t.vo2_desc}</p>
                     </div>
                 </div>
 
-                {/* 2. Threshold */}
+                {/* 2. Threshold - Sürdürülebilirlik */}
                 <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl p-5 flex flex-row md:flex-col items-center md:items-start gap-4 hover:bg-slate-800 transition-colors">
                     <div className="p-2 bg-slate-800 rounded-lg shrink-0 border border-slate-700">
                         <IconFire />
@@ -191,8 +203,11 @@ const RunningPerformancePage = ({ lang }) => {
                         <p className="text-slate-500 text-xs mb-4 max-w-prose">
                             {t.eq_desc}
                         </p>
-                        <p className="text-slate-600 text-[10px] italic">
+                        <p className="text-slate-600 text-[10px] italic mb-1">
                             {t.eq_note}
+                        </p>
+                        <p className="text-slate-500 text-[10px] italic">
+                            {t.eq_fractional_note}
                         </p>
                     </div>
 
