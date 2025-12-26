@@ -256,7 +256,7 @@ const RunningPerformancePage = ({ lang }) => {
 
                         <div className="mt-auto pt-6 text-center">
                             <div className="latex-formula text-sm opacity-50 overflow-x-auto">
-                                $$ v = \frac{VO_{2max} \times \%LT}{Economy} $$
+                     {`$$ v = \\frac{VO_{2max} \\times \\%LT}{Economy} $$`}
                             </div>
                         </div>
                     </div>
