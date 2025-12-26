@@ -1,6 +1,5 @@
 const { useState, useEffect, useMemo, useRef } = React;
 
-// --- TEMA AYARLARI ---
 const THEMES = [
     { id: 'cyan', name: 'Turkuaz', rgb: '6 182 212', hex: '#06b6d4' },
     { id: 'red', name: 'Kırmızı', rgb: '239 68 68', hex: '#ef4444' },
@@ -15,7 +14,7 @@ const THEMES = [
 ];
 
 const App = () => {
-    // --- STATE TANIMLARI ---
+    // --- VERİLERİ HARİCİ DOSYADAN (Data.js) AL ---
     const [posts, setPosts] = useState(window.HybNotesData?.posts || []);
     const [facts, setFacts] = useState(window.HybNotesData?.facts || []);
     const [currentFact, setCurrentFact] = useState(null);
@@ -25,21 +24,22 @@ const App = () => {
     const [readingArticle, setReadingArticle] = useState(null);
     const [user, setUser] = useState(null);
     
-    // Dil ve Tema (LocalStorage)
+    // --- STATE INITIALIZATION WITH LOCALSTORAGE ---
     const [lang, setLang] = useState(() => localStorage.getItem('hybnotes_lang') || 'tr');
+    
     const [activeTheme, setActiveTheme] = useState(() => {
         const saved = localStorage.getItem('hybnotes_theme');
         return THEMES.find(t => t.id === saved) || THEMES[0];
     });
 
-    // Rastgele Bilgi (Fact) Seçimi
+    // Rastgele bir bilgi seç
     useEffect(() => {
         if (facts.length > 0 && !currentFact) {
             setCurrentFact(facts[Math.floor(Math.random() * facts.length)]);
         }
     }, [facts]);
 
-    // --- FIREBASE AUTH ---
+    // --- AUTH ---
     useEffect(() => {
         if (typeof firebase === 'undefined' || !firebase.apps.length) return;
         const initAuth = async () => {
@@ -56,7 +56,7 @@ const App = () => {
         return () => unsubscribe();
     }, []);
 
-    // --- AYARLARI KAYDETME ---
+    // --- SAVE SETTINGS (LocalStorage Priority) ---
     useEffect(() => {
         document.documentElement.style.setProperty('--primary-rgb', activeTheme.rgb);
         document.documentElement.lang = lang; 
@@ -66,15 +66,11 @@ const App = () => {
 
         if (user && typeof firebase !== 'undefined') {
             const db = firebase.firestore();
-            db.collection('artifacts').doc('hybnotes-app').collection('users').doc(user.uid)
-              .collection('user_prefs').doc('settings')
-              .set({ themeId: activeTheme.id, lang: lang }, { merge: true }).catch(()=>{});
+            db.collection('artifacts').doc('hybnotes-app').collection('users').doc(user.uid).collection('user_prefs').doc('settings').set({ themeId: activeTheme.id, lang: lang }).catch(()=>{});
         }
     }, [activeTheme, lang, user]);
 
-    // --- ALT BİLEŞENLER (COMPONENTS) ---
-
-    // 1. Makale Detay Sayfası
+    // --- COMPONENTS ---
     const ArticleDetail = ({ article, goBack, lang }) => (
         <div className="animate-fade-in pb-20">
             <button onClick={goBack} className="mb-6 flex items-center gap-2 text-slate-400 hover:text-primary transition-colors font-bold group text-sm md:text-base">
@@ -97,7 +93,6 @@ const App = () => {
         </div>
     );
 
-    // 2. Kütüphane (Research) Sayfası
     const ResearchPage = ({ posts, onSelect, lang }) => {
         const [searchTerm, setSearchTerm] = useState("");
         const ALL_CATEGORY = "ALL_CATEGORY"; 
@@ -168,7 +163,6 @@ const App = () => {
         );
     };
 
-    // 3. Yan Widget (Son Eklenenler)
     const LatestPostsWidget = ({ posts, onSelect, lang }) => {
         const latest = [...posts].sort((a, b) => b.id - a.id).slice(0, 3);
         const t = { title: lang === 'tr' ? 'Son Eklenenler' : 'Latest Posts', new: lang === 'tr' ? 'Yeni' : 'New', viewAll: lang === 'tr' ? 'Tümünü Gör' : 'View All' };
@@ -181,7 +175,6 @@ const App = () => {
         );
     };
 
-    // 4. Ana Sayfa
     const HomePage = ({ changePage, posts, onRead, lang, currentFact }) => {
         const latestPost = posts.length > 0 ? posts[0] : null;
         return (
@@ -215,33 +208,20 @@ const App = () => {
         );
     };
 
-    // 5. Üst Menü (NavBar)
     const NavBar = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen, activeTheme, setActiveTheme, lang, setLang }) => {
         const [showPalette, setShowPalette] = useState(false);
-        
-        // --- YENİLENMİŞ MENÜ YAPISI ---
         const MENU_ITEMS = [
             { id: 'home', title: lang === 'tr' ? 'Ana Sayfa' : 'Home', icon: Icons.Activity },
             { id: 'research', title: lang === 'tr' ? 'Kütüphane' : 'Library', icon: Icons.BookOpen },
-            // KOŞU Kategorisi (Yeni)
-            { 
-                id: 'running', 
-                title: lang === 'tr' ? 'Koşu' : 'Running', 
-                icon: Icons.TrendingUp, 
-                type: 'dropdown',
-                children: [
-                    { id: 'running_perf', title: lang === 'tr' ? 'Performans Modeli' : 'Performance Model', icon: Icons.Gauge },
-                    { id: 'utmb_lottery', title: lang === 'tr' ? 'UTMB Kura' : 'UTMB Lottery', icon: Icons.Ticket },
-                ]
-            },
-            // ARAÇLAR Kategorisi (Diğer)
             { 
                 id: 'tools', 
                 title: lang === 'tr' ? 'Araçlar' : 'Tools', 
                 icon: Icons.Calculator,
                 type: 'dropdown',
                 children: [
+                    { id: 'utmb_lottery', title: lang === 'tr' ? 'UTMB Kura' : 'UTMB Lottery', icon: Icons.Ticket },
                     { id: 'caffeine', title: lang === 'tr' ? 'Kafein Stratejisi' : 'Caffeine Strategy', icon: Icons.Zap },
+                    { id: 'running_perf', title: lang === 'tr' ? 'Koşu Bilimi' : 'Running Science', icon: Icons.Activity },
                 ]
             },
         ];
@@ -277,27 +257,14 @@ const App = () => {
         );
     };
 
-    // 6. Sayfa İçeriğini Render Et
     const renderContent = () => {
         switch (activeTab) {
-            case 'home': 
-                return <HomePage changePage={setActiveTab} posts={posts} onRead={(post) => { setReadingArticle(post); setActiveTab('research'); }} lang={lang} currentFact={currentFact} />;
-            
-            case 'research': 
-                return readingArticle ? <ArticleDetail article={readingArticle} goBack={() => setReadingArticle(null)} lang={lang} /> : <ResearchPage posts={posts} onSelect={(article) => { setReadingArticle(article); setActiveTab('research'); }} lang={lang} />;
-            
-            // YENİ EKLENEN KISIMLAR:
-            case 'running_perf': 
-                return window.RunningPerformancePage ? <window.RunningPerformancePage lang={lang} /> : <div className="text-center p-20 text-slate-500 animate-pulse">Loading Performance Module...</div>;
-            
-            case 'utmb_lottery': 
-                return window.UTMBLotteryPage ? <window.UTMBLotteryPage lang={lang} /> : <div className="text-center p-20 text-slate-500">Loading UTMB Module...</div>;
-            
-            case 'caffeine': 
-                return window.CaffeinePage ? <window.CaffeinePage lang={lang} activeTheme={activeTheme} /> : <div className="text-center p-20 text-slate-500">Loading Caffeine Module...</div>;
-            
-            default: 
-                return <HomePage changePage={setActiveTab} posts={posts} onRead={(post) => { setReadingArticle(post); setActiveTab('research'); }} lang={lang} currentFact={currentFact} />;
+            case 'home': return <HomePage changePage={setActiveTab} posts={posts} onRead={(post) => { setReadingArticle(post); setActiveTab('research'); }} lang={lang} currentFact={currentFact} />;
+            case 'research': return readingArticle ? <ArticleDetail article={readingArticle} goBack={() => setReadingArticle(null)} lang={lang} /> : <ResearchPage posts={posts} onSelect={(article) => { setReadingArticle(article); setActiveTab('research'); }} lang={lang} />;
+            case 'utmb_lottery': return window.UTMBLotteryPage ? <window.UTMBLotteryPage lang={lang} /> : <div className="text-center p-10 text-slate-500">Loading module...</div>;
+            case 'caffeine': return window.CaffeinePage ? <window.CaffeinePage lang={lang} activeTheme={activeTheme} /> : <div className="text-center p-10 text-slate-500">Loading module...</div>;
+            case 'running_perf': return window.RunningPerformancePage ? <window.RunningPerformancePage lang={lang} /> : <div className="text-center p-10 text-slate-500">Loading module...</div>;
+            default: return <HomePage changePage={setActiveTab} />;
         }
     };
 
