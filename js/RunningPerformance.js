@@ -2,26 +2,26 @@ const RunningPerformancePage = ({ lang }) => {
     const { useEffect } = React;
 
     const tr = {
-        title: "Koşu Bilimi: Literatür Ne Diyor?",
-        subtitle: "Performansı belirleyen 4 temel faktör ve aralarındaki matematiksel ilişki.",
+        title: "Koşu Performansını Etkileyen Temel Faktörler",
+        subtitle: "Literatür koşu performansını etkileyen temelde 4 faktöre yer veriyor.",
         validity: "Geçerlilik: 1500m - Ultra Maraton (Aerobik Baskın Koşular)",
         
         // 4 Sütun
         vo2_title: "VO₂max",
-        vo2_sub: "MOTOR HACMİ",
-        vo2_desc: "Oksijen kullanma tavanı. Potansiyeli belirler.",
+        vo2_sub: "OKSİJEN KULLANMA TAVANI",
+        vo2_desc: "Aerobik kapasitenin üst limiti. Bir arabanın motor hacmi gibidir; ne kadar yüksekse potansiyel o kadar fazladır.",
         
         threshold_title: "% Eşik",
         threshold_sub: "SÜRDÜRÜLEBİLİRLİK",
-        threshold_desc: "Motorun yüzde kaçını 'patlamadan' kullanabiliyorsun?",
+        threshold_desc: "Mevcut kapasitenin yüzde kaçını 'patlamadan' (yorulmadan) uzun süre kullanabiliyorsun?",
         
         economy_title: "Ekonomi",
         economy_sub: "VERİMLİLİK",
-        economy_desc: "Aynı hızda ne kadar az yakıt harcıyorsun?",
+        economy_desc: "Belirli bir hızda koşarken ne kadar enerji (yakıt) harcıyorsun?",
         
         resilience_title: "Resilience",
         resilience_sub: "DAYANIKLILIK",
-        resilience_desc: "Yarışın sonunda bu değerlerin düşmesini engelleyen kalkan.",
+        resilience_desc: "Yarışın sonlarına doğru yorgunluğa rağmen performansı koruyabilme yeteneği.",
 
         // Formül Alanı
         eq_title: "PERFORMANS DENKLEMİ",
@@ -39,26 +39,26 @@ const RunningPerformancePage = ({ lang }) => {
     };
 
     const en = {
-        title: "Running Science: What the Literature Says",
-        subtitle: "The 4 key determinants of performance and their mathematical relationship.",
+        title: "Key Factors Affecting Running Performance",
+        subtitle: "Literature highlights 4 fundamental factors affecting running performance.",
         validity: "Validity: 1500m - Ultra Marathon (Aerobic Dominant Runs)",
         
         // 4 Pillars
         vo2_title: "VO₂max",
-        vo2_sub: "ENGINE SIZE",
-        vo2_desc: "The ceiling of oxygen utilization. Determines potential.",
+        vo2_sub: "OXYGEN UPTAKE CEILING",
+        vo2_desc: "The upper limit of aerobic capacity. Like a car's engine size, it determines potential.",
         
         threshold_title: "% Threshold",
         threshold_sub: "SUSTAINABILITY",
-        threshold_desc: "What percentage of the engine can you use without 'blowing up'?",
+        threshold_desc: "What percentage of your capacity can you use without 'blowing up'?",
         
         economy_title: "Economy",
         economy_sub: "EFFICIENCY",
-        economy_desc: "How much fuel do you burn at a given speed?",
+        economy_desc: "How much energy (fuel) do you consume at a given speed?",
         
         resilience_title: "Resilience",
         resilience_sub: "DURABILITY",
-        resilience_desc: "The shield that prevents these values from decaying late in the race.",
+        resilience_desc: "The ability to maintain performance despite fatigue late in the race.",
 
         // Formula Area
         eq_title: "THE PERFORMANCE EQUATION",
