@@ -210,20 +210,51 @@ const App = () => {
 
     const NavBar = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen, activeTheme, setActiveTheme, lang, setLang }) => {
         const [showPalette, setShowPalette] = useState(false);
-        const MENU_ITEMS = [
-            { id: 'home', title: lang === 'tr' ? 'Ana Sayfa' : 'Home', icon: Icons.Activity },
-            { id: 'research', title: lang === 'tr' ? 'Kütüphane' : 'Library', icon: Icons.BookOpen },
+       const MENU_ITEMS = [
+    { 
+        id: 'home', 
+        title: lang === 'tr' ? 'Ana Sayfa' : 'Home', 
+        icon: Icons.Activity 
+    },
+    { 
+        id: 'research', 
+        title: lang === 'tr' ? 'Kütüphane' : 'Library', 
+        icon: Icons.BookOpen 
+    },
+    // --- YENİ: KOŞU KATEGORİSİ ---
+    { 
+        id: 'running', 
+        title: lang === 'tr' ? 'Koşu' : 'Running', 
+        icon: Icons.TrendingUp, // İkon: Yükseliş/Performans
+        type: 'dropdown',
+        children: [
             { 
-                id: 'tools', 
-                title: lang === 'tr' ? 'Araçlar' : 'Tools', 
-                icon: Icons.Calculator,
-                type: 'dropdown',
-                children: [
-                    { id: 'utmb_lottery', title: lang === 'tr' ? 'UTMB Kura' : 'UTMB Lottery', icon: Icons.Ticket },
-                    { id: 'caffeine', title: lang === 'tr' ? 'Kafein Stratejisi' : 'Caffeine Strategy', icon: Icons.Zap },
-                ]
+                id: 'running_perf', // Yeni modülümüz
+                title: lang === 'tr' ? 'Performans Modeli' : 'Performance Model', 
+                icon: Icons.Gauge // İkon: Hız göstergesi
             },
-        ];
+            { 
+                id: 'utmb_lottery', // Buraya taşıdık
+                title: lang === 'tr' ? 'UTMB Kura' : 'UTMB Lottery', 
+                icon: Icons.Ticket 
+            },
+        ]
+    },
+    // --- ARAÇLAR KATEGORİSİ (Genel) ---
+    { 
+        id: 'tools', 
+        title: lang === 'tr' ? 'Araçlar' : 'Tools', 
+        icon: Icons.Calculator,
+        type: 'dropdown',
+        children: [
+            { 
+                id: 'caffeine', 
+                title: lang === 'tr' ? 'Kafein Stratejisi' : 'Caffeine Strategy', 
+                icon: Icons.Zap 
+            },
+        ]
+    },
+];
 
         return (
             <nav className="fixed top-0 w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
@@ -256,16 +287,36 @@ const App = () => {
         );
     };
 
-    const renderContent = () => {
+ const renderContent = () => {
         switch (activeTab) {
-            case 'home': return <HomePage changePage={setActiveTab} posts={posts} onRead={(post) => { setReadingArticle(post); setActiveTab('research'); }} lang={lang} currentFact={currentFact} />;
-            case 'research': return readingArticle ? <ArticleDetail article={readingArticle} goBack={() => setReadingArticle(null)} lang={lang} /> : <ResearchPage posts={posts} onSelect={(article) => { setReadingArticle(article); setActiveTab('research'); }} lang={lang} />;
-            case 'utmb_lottery': return window.UTMBLotteryPage ? <window.UTMBLotteryPage lang={lang} /> : <div className="text-center p-10 text-slate-500">Loading module...</div>;
-            case 'caffeine': return window.CaffeinePage ? <window.CaffeinePage lang={lang} activeTheme={activeTheme} /> : <div className="text-center p-10 text-slate-500">Loading module...</div>;
-            default: return <HomePage changePage={setActiveTab} />;
+            case 'home': 
+                return <HomePage changePage={setActiveTab} posts={posts} onRead={(post) => { setReadingArticle(post); setActiveTab('research'); }} lang={lang} currentFact={currentFact} />;
+            
+            case 'research': 
+                return readingArticle ? <ArticleDetail article={readingArticle} goBack={() => setReadingArticle(null)} lang={lang} /> : <ResearchPage posts={posts} onSelect={(article) => { setReadingArticle(article); setActiveTab('research'); }} lang={lang} />;
+            
+            // --- YENİ EKLENEN KOŞU PERFORMANSI ---
+            case 'running_perf': 
+                return window.RunningPerformancePage 
+                    ? <window.RunningPerformancePage lang={lang} /> 
+                    : <div className="text-center p-20 text-slate-500 animate-pulse">Loading Performance Module...</div>;
+            
+            // --- UTMB (Yeri değişti ama case ismi aynı kalabilir) ---
+            case 'utmb_lottery': 
+                return window.UTMBLotteryPage 
+                    ? <window.UTMBLotteryPage lang={lang} /> 
+                    : <div className="text-center p-20 text-slate-500">Loading UTMB Module...</div>;
+            
+            // --- KAFEİN ---
+            case 'caffeine': 
+                return window.CaffeinePage 
+                    ? <window.CaffeinePage lang={lang} activeTheme={activeTheme} /> 
+                    : <div className="text-center p-20 text-slate-500">Loading Caffeine Module...</div>;
+            
+            default: 
+                return <HomePage changePage={setActiveTab} posts={posts} onRead={(post) => { setReadingArticle(post); setActiveTab('research'); }} lang={lang} currentFact={currentFact} />;
         }
     };
-
     return (
         <div className="min-h-screen bg-slate-900 text-slate-200 font-sans selection:bg-primary/30">
             <NavBar activeTab={activeTab} setActiveTab={(tab) => { setActiveTab(tab); setReadingArticle(null); }} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} activeTheme={activeTheme} setActiveTheme={setActiveTheme} lang={lang} setLang={setLang} />
