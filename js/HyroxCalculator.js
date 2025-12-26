@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+// Global React objesinden hook'ları alıyoruz
+const { useState, useMemo } = React;
 
-// --- VERİ VE SABİTLER (Bileşen dışına alındı - Render yükünü azaltır) ---
+// --- VERİ VE SABİTLER ---
 const STATION_DATA = {
     run1: { defaultTime: 270, p10: 210, p90: 380, min: 180, max: 480 },
     run2: { defaultTime: 280, p10: 215, p90: 390, min: 180, max: 480 },
@@ -75,7 +76,7 @@ const TRANSLATIONS = {
     }
 };
 
-// --- HELPER FUNCTIONS (Bileşen dışına alındı) ---
+// --- HELPER FUNCTIONS ---
 const formatMMSS = (seconds) => {
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
@@ -108,7 +109,7 @@ const getPctColor = (pct) => {
     return 'text-rose-400';
 };
 
-// Slider Style
+// Slider Style (Bu stil slider'ın her zaman çalışmasını sağlar)
 const sliderStyle = {
     WebkitAppearance: 'none',
     width: '100%',
@@ -117,13 +118,14 @@ const sliderStyle = {
     borderRadius: '3px',
     outline: 'none',
     cursor: 'pointer',
-    position: 'relative',
-    zIndex: 50
+    display: 'block',
+    margin: '10px 0'
 };
 
-// --- SUB-COMPONENTS (Bileşen dışına alındı - ARTIK TAKILMAZ) ---
+// --- SUB-COMPONENT: SliderGroup ---
 const SliderGroup = ({ keys, title, colorClass, icon, values, onChange, t }) => (
     <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden isolate">
+        {/* Arka Plan Efekti - pointer-events-none çok önemli */}
         <div className={`absolute -top-10 -right-10 w-48 h-48 ${colorClass} rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none -z-10`}></div>
         
         <h2 className={`text-2xl font-black mb-6 flex items-center gap-2 ${colorClass.replace('bg-', 'text-')} relative z-10`}>
@@ -141,9 +143,9 @@ const SliderGroup = ({ keys, title, colorClass, icon, values, onChange, t }) => 
                                   : 'accent-cyan-400';
 
                 return (
-                    <div key={key} className="space-y-3 relative group">
+                    <div key={key} className="space-y-2">
                         <div className="flex justify-between items-end">
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider group-hover:text-slate-200 transition-colors">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                                 {t.stations[key]}
                             </label>
                             <div className="flex items-center gap-2">
@@ -156,17 +158,16 @@ const SliderGroup = ({ keys, title, colorClass, icon, values, onChange, t }) => 
                             </div>
                         </div>
                         
-                        <div className="relative w-full h-6 flex items-center">
-                            <input 
-                                type="range" 
-                                min={data.min} 
-                                max={data.max} 
-                                value={val} 
-                                onChange={(e) => onChange(key, e.target.value)}
-                                style={sliderStyle}
-                                className={`w-full ${accentColor} hover:brightness-110 active:cursor-grabbing`}
-                            />
-                        </div>
+                        {/* INPUT RANGE: Basit ve temiz, ekstra div içinde değil */}
+                        <input 
+                            type="range" 
+                            min={data.min} 
+                            max={data.max} 
+                            value={val} 
+                            onChange={(e) => onChange(key, e.target.value)}
+                            style={sliderStyle}
+                            className={`w-full ${accentColor}`}
+                        />
                     </div>
                 );
             })}
@@ -265,7 +266,6 @@ const HyroxCalculatorPage = ({ lang = 'tr', activeTheme }) => {
                                 {t.sync_button}
                             </button>
                         </div>
-                        {/* ARTIK TAKILMAYACAK */}
                         <SliderGroup 
                             keys={['run1','run2','run3','run4','run5','run6','run7','run8']} 
                             title={t.running_header} 
@@ -306,17 +306,15 @@ const HyroxCalculatorPage = ({ lang = 'tr', activeTheme }) => {
                                     </span>
                                 </div>
                             </div>
-                            <div className="relative w-full h-6 flex items-center">
-                                <input 
-                                    type="range" 
-                                    min={STATION_DATA.roxzone.min} 
-                                    max={STATION_DATA.roxzone.max} 
-                                    value={values.roxzone} 
-                                    onChange={(e) => handleSliderChange('roxzone', e.target.value)}
-                                    style={sliderStyle}
-                                    className="w-full accent-cyan-400 hover:brightness-110 active:cursor-grabbing"
-                                />
-                            </div>
+                            <input 
+                                type="range" 
+                                min={STATION_DATA.roxzone.min} 
+                                max={STATION_DATA.roxzone.max} 
+                                value={values.roxzone} 
+                                onChange={(e) => handleSliderChange('roxzone', e.target.value)}
+                                style={sliderStyle}
+                                className="w-full accent-cyan-400"
+                            />
                         </div>
                     </section>
                 </div>
@@ -339,7 +337,6 @@ const HyroxCalculatorPage = ({ lang = 'tr', activeTheme }) => {
                         </div>
 
                         <div className="space-y-4">
-                            {/* Özetler */}
                             <div className="p-4 rounded-xl bg-slate-900/50 border border-slate-700/50 flex justify-between items-center group hover:bg-slate-900 transition-colors">
                                 <div>
                                     <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider block mb-1">{t.total_run_label}</span>
@@ -364,6 +361,12 @@ const HyroxCalculatorPage = ({ lang = 'tr', activeTheme }) => {
                                 <div className={`text-xs font-bold ${getPctColor(stats.roxPct)}`}>%{stats.roxPct.toFixed(1)}</div>
                             </div>
                         </div>
+
+                        <div className="mt-8 pt-6 border-t border-slate-700 text-center">
+                            <p className="text-[10px] text-slate-500 leading-relaxed italic">
+                                * Percentiles based on HYResult database statistics.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -371,4 +374,5 @@ const HyroxCalculatorPage = ({ lang = 'tr', activeTheme }) => {
     );
 };
 
+// Global erişim için window'a ata
 window.HyroxCalculatorPage = HyroxCalculatorPage;
