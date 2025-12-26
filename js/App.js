@@ -1,12 +1,5 @@
 const { useState, useEffect, useMemo, useRef } = React;
 
-// --- DATA ---
-const DEFAULT_POSTS = [
-  { "id": 5, "date": "2024-10-28", "readTime": { "tr": "6 dk", "en": "6 min" }, "category": { "tr": "Antrenman Bilimi", "en": "Training Science" }, "title": { "tr": "Karvonen Formülü: Nabız Aralıklarını Doğru Hesaplamak", "en": "Karvonen Formula: Calculating Heart Rate Zones Correctly" }, "summary": { "tr": "Klasik (220-Yaş) formülü neden hatalı? Nabız yedeği (HR Reserve) yöntemi ile gerçek kişiselleştirilmiş zone hesaplaması.", "en": "Why is the classic (220-Age) formula flawed? Truly personalized zone calculation using the Heart Rate Reserve (HRR) method." }, "content": { "tr": "<p>Çoğu spor saati varsayılan olarak '220 - Yaş' formülünü kullanır...</p>", "en": "<p>Most sports watches use the '220 - Age' formula by default...</p>" }, "references": ["Karvonen M, Kentala E. (1957)."] },
-  { "id": 4, "date": "2024-10-20", "readTime": { "tr": "8 dk", "en": "8 min" }, "category": { "tr": "Beslenme", "en": "Nutrition" }, "title": { "tr": "Ultra Maratonlarda Sodyum Alım Stratejileri", "en": "Sodium Intake Strategies in Ultra Marathons" }, "summary": { "tr": "Uzun yarışlarda hiponatremi riskini azaltmak ve performansı korumak için saatlik mg hesaplamaları.", "en": "Hourly mg calculations to reduce hyponatremia risk and maintain performance in long races." }, "content": { "tr": "<p>Uzun yarışlarda sadece su içmek ölümcül olabilir...</p>", "en": "<p>Drinking only water during long races can be fatal...</p>" }, "references": ["Hoffman, M. D. (2014)."] },
-  { "id": 3, "date": "2024-10-15", "readTime": { "tr": "12 dk", "en": "12 min" }, "category": { "tr": "Fizyoloji", "en": "Physiology" }, "title": { "tr": "Mitokondriyal Biyogenez ve Zone 2", "en": "Mitochondrial Biogenesis and Zone 2" }, "summary": { "tr": "Düşük yoğunluklu antrenmanların laktat temizleme kapasitesini nasıl artırdığına dair yeni bulgular.", "en": "New findings on how low-intensity training increases lactate clearance capacity." }, "content": { "tr": "<p>Mitokondri, hücrenin enerji santralidir...</p>", "en": "<p>Mitochondria are the powerhouse of the cell...</p>" }, "references": ["San-Millán, I. (2018)."] }
-];
-
 const THEMES = [
     { id: 'cyan', name: 'Turkuaz', rgb: '6 182 212', hex: '#06b6d4' },
     { id: 'red', name: 'Kırmızı', rgb: '239 68 68', hex: '#ef4444' },
@@ -21,16 +14,17 @@ const THEMES = [
 ];
 
 const App = () => {
-    const [posts, setPosts] = useState(DEFAULT_POSTS);
-    const [facts, setFacts] = useState([]);
+    // --- VERİLERİ HARİCİ DOSYADAN (Data.js) AL ---
+    const [posts, setPosts] = useState(window.HybNotesData?.posts || []);
+    const [facts, setFacts] = useState(window.HybNotesData?.facts || []);
     const [currentFact, setCurrentFact] = useState(null);
+    
     const [activeTab, setActiveTab] = useState('home');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [readingArticle, setReadingArticle] = useState(null);
     const [user, setUser] = useState(null);
     
     // --- STATE INITIALIZATION WITH LOCALSTORAGE ---
-    // Eğer localStorage boşsa, 'tr' varsayılan olsun.
     const [lang, setLang] = useState(() => localStorage.getItem('hybnotes_lang') || 'tr');
     
     const [activeTheme, setActiveTheme] = useState(() => {
@@ -38,9 +32,16 @@ const App = () => {
         return THEMES.find(t => t.id === saved) || THEMES[0];
     });
 
+    // Rastgele bir bilgi seç
+    useEffect(() => {
+        if (facts.length > 0 && !currentFact) {
+            setCurrentFact(facts[Math.floor(Math.random() * facts.length)]);
+        }
+    }, [facts]);
+
     // --- AUTH ---
     useEffect(() => {
-        if (!typeof firebase === 'undefined' || !firebase.apps.length) return;
+        if (typeof firebase === 'undefined' || !firebase.apps.length) return;
         const initAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -55,28 +56,21 @@ const App = () => {
         return () => unsubscribe();
     }, []);
 
-    // --- LOAD DATA ---
-    useEffect(() => {
-        fetch('posts.json').then(r=>r.ok?r.json():[]).then(d=>setPosts(d.length?d:DEFAULT_POSTS)).catch(()=>{});
-        fetch('biliyormuydunuz.json').then(r=>r.ok?r.json():[]).then(d=>{setFacts(d);if(d.length)setCurrentFact(d[Math.floor(Math.random()*d.length)]);}).catch(()=>{});
-    }, []);
-
     // --- SAVE SETTINGS (LocalStorage Priority) ---
     useEffect(() => {
         document.documentElement.style.setProperty('--primary-rgb', activeTheme.rgb);
-        document.documentElement.lang = lang; // Fix for uppercase I/İ issue
+        document.documentElement.lang = lang; 
         
         localStorage.setItem('hybnotes_lang', lang);
         localStorage.setItem('hybnotes_theme', activeTheme.id);
 
-        // Opsiyonel: Firebase varsa oraya da yedekle
         if (user && typeof firebase !== 'undefined') {
             const db = firebase.firestore();
             db.collection('artifacts').doc('hybnotes-app').collection('users').doc(user.uid).collection('user_prefs').doc('settings').set({ themeId: activeTheme.id, lang: lang }).catch(()=>{});
         }
     }, [activeTheme, lang, user]);
 
-    // --- COMPONENTS (Internal to App to keep context easy) ---
+    // --- COMPONENTS ---
     const ArticleDetail = ({ article, goBack, lang }) => (
         <div className="animate-fade-in pb-20">
             <button onClick={goBack} className="mb-6 flex items-center gap-2 text-slate-400 hover:text-primary transition-colors font-bold group text-sm md:text-base">
@@ -240,7 +234,7 @@ const App = () => {
                             {MENU_ITEMS.map((item) => (
                                 <div key={item.id} className="relative group">
                                     <button onClick={() => !item.children && setActiveTab(item.id)} className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors ${activeTab === item.id ? 'text-primary bg-primary/10' : 'text-slate-400 hover:text-white'}`}><item.icon size={18} /> {item.title} {item.children && <Icons.ChevronDown size={14}/>}</button>
-                                    {item.children && (<div className="absolute top-full left-0 w-56 pt-2 hidden group-hover:block"><div className="bg-slate-800 border border-slate-700 rounded-xl shadow-xl overflow-hidden animate-fade-in">{item.children.map((subItem) => (<button key={subItem.id} onClick={() => { setActiveTab(subItem.id); setReadingArticle(null); }} className="w-full text-left px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white flex items-center gap-3"><subItem.icon size={16} /> {subItem.title}</button>))}</div></div>)}
+                                    {item.children && (<div className="absolute top-full left-0 w-56 pt-2 hidden group-hover:block"><div className="bg-slate-800 border border-slate-700 rounded-xl shadow-xl overflow-hidden animate-fade-in">{item.children.map((subItem) => (<button key={subItem.id} onClick={() => { setActiveTab(subItem.id); setReadingArticle(null); }} className="w-full text-left px-4 py-3 rounded-lg font-medium text-slate-300 hover:bg-slate-700 hover:text-white flex items-center gap-3"><subItem.icon size={16} /> {subItem.title}</button>))}</div></div>)}
                                 </div>
                             ))}
                         </div>
