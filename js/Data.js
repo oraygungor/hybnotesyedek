@@ -6,151 +6,254 @@ window.HybNotesData = {
         { 
             "id": 101, 
             "date": "2024-11-15", 
-            "readTime": { "tr": "10 dk", "en": "10 min" }, 
+            "readTime": { "tr": "15 dk", "en": "15 min" }, 
             "category": { "tr": "Fizyoloji", "en": "Physiology" }, 
-            "title": { "tr": "VO2max: Dayanıklılığın Tavanı mı?", "en": "VO2max: The Ceiling of Endurance?" }, 
+            "title": { "tr": "VO2max: Fick Denklemi ve Dayanıklılık Tavanı", "en": "VO2max: The Fick Equation and Endurance Ceiling" }, 
             "summary": { 
-                "tr": "Maksimum oksijen tüketim kapasitesi (VO2max) nedir, ne kadar geliştirilebilir? Fick denklemi ve performans ile ilişkisi.", 
-                "en": "What is maximum oxygen uptake (VO2max) and how much can it be improved? The Fick equation and its correlation with performance." 
+                "tr": "Maksimum oksijen tüketim kapasitesi sadece akciğerlerle ilgili değildir. Fick denklemi üzerinden kalbin atım hacmi ve kasların oksijen ekstraksiyon kapasitesinin analizi.", 
+                "en": "Maximal oxygen uptake is not just about the lungs. Analysis of stroke volume and muscle oxygen extraction capacity via the Fick equation." 
             }, 
             "content": { 
                 "tr": `
-                    <p>VO2max, bir sporcunun deniz seviyesinde, maksimum efor sırasında kullanabildiği en yüksek oksijen hacmini ifade eder. Genellikle <em>ml/kg/dk</em> cinsinden ölçülür.</p>
-                    <div class="math-box">VO2max = Q × (a-v)O₂ farkı</div>
-                    <p>Burada <strong>Q (Kardiyak Çıktı)</strong> kalbin bir dakikada pompaladığı kan miktarını, <strong>(a-v)O₂ farkı</strong> ise arteriyel ve venöz kan arasındaki oksijen farkını (kasların kandan ne kadar oksijen çekebildiğini) gösterir.</p>
-                    <h4>Antrenmanla Ne Kadar Gelişir?</h4>
-                    <p>Bilimsel çalışmalar, VO2max'ın büyük ölçüde genetik (yaklaşık %50) olduğunu göstermektedir. Düzenli antrenman ile sedanter bir birey VO2max değerini %15-20 oranında artırabilir. Elite dayanıklılık sporcularında bu değer erkeklerde 70-85, kadınlarda 60-75 ml/kg/dk aralığına ulaşabilir.</p>
-                    <p>Ancak unutulmamalıdır ki; VO2max "motorun hacmini" belirlerken, Laktat Eşiği ve Koşu Ekonomisi o motorun "ne kadar verimli" kullanıldığını belirler.</p>
+                    <p>Dayanıklılık sporlarında performansın "altın standardı" olarak kabul edilen <strong>VO<sub>2max</sub></strong>, bir sporcunun deniz seviyesinde, maksimum efor sırasında kullanabildiği en yüksek oksijen hacmini ifade eder. Ancak yaygın inanışın aksine, bu değer sadece akciğer kapasitesiyle sınırlı değildir; asıl sınırlayıcı faktör genellikle kalbin pompalama kapasitesi ve kasların bu oksijeni kandan çekebilme yeteneğidir.</p>
+                    
+                    <h3>Fick Prensibi ve Matematiksel Model</h3>
+                    <p>Adolf Fick tarafından 1870'de geliştirilen prensip, VO<sub>2max</sub>'ı belirleyen fizyolojik bileşenleri şu temel denklemle açıklar:</p>
+                    
+                    <div class="latex-formula" style="background: rgba(79, 209, 197, 0.1); padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        <span>VO</span><sub>2max</sub> <span class="op">=</span> <span>Q</span> <span class="op">×</span> <span>(a-v)O</span><sub>2</sub>
+                    </div>
+
+                    <p>Bu denklemde:</p>
+                    <ul style="list-style-type: disc; padding-left: 20px; color: #a9b3d9;">
+                        <li><strong>Q (Kardiyak Çıktı):</strong> Kalbin bir dakikada pompaladığı kan miktarıdır. <br><em>Formül: Atım Hacmi (SV) × Kalp Atım Hızı (HR)</em>. Elit sporcularda 35-40 L/dk'ya kadar çıkabilir.</li>
+                        <li><strong>(a-v)O<sub>2</sub> Farkı:</strong> Arteriyel (temiz) ve venöz (kirli) kan arasındaki oksijen farkıdır. Bu, kasların gelen kandan ne kadar oksijen çekebildiğini (ekstraksiyon kapasitesi) gösterir.</li>
+                    </ul>
+
+                    <blockquote>
+                        "VO2max motorun hacmini belirler, ancak o motorla ne kadar hızlı gidebileceğinizi Koşu Ekonomisi ve Laktat Eşiği belirler." — Dr. Stephen Seiler
+                    </blockquote>
+
+                    <h3>Genetik ve Antrenman Uyarlamaları</h3>
+                    <p>Bouchard ve arkadaşlarının (1999) yaptığı ünlü <em>HERITAGE Aile Çalışması</em>, VO<sub>2max</sub>'ın antrenmana yanıtının (trainability) %47 oranında kalıtsal olduğunu göstermiştir. Yani başlangıç seviyeniz düşük olsa bile, "yüksek yanıt veren" (high responder) bir genetiğe sahipseniz, düzenli antrenmanla bu değeri %40-50 artırabilirsiniz.</p>
+                    
+                    <p>Antrenmanla gelişimin fizyolojik mekanizmaları şunlardır:</p>
+                    <ol style="list-style-type: decimal; padding-left: 20px; color: #e7ecff;">
+                        <li><strong>Atım Hacmi Artışı:</strong> Sol ventrikülün büyümesi (eksantrik hipertrofi) sayesinde kalp her atışta daha fazla kan pompalar.</li>
+                        <li><strong>Kapillarizasyon:</strong> Tip I kas lifleri etrafındaki kılcal damar ağı artar, bu da (a-v)O<sub>2</sub> farkını iyileştirir.</li>
+                        <li><strong>Mitokondriyal Yoğunluk:</strong> Oksijeni işleyen organellerin sayısı artar.</li>
+                    </ol>
                 `,
                 "en": `
-                    <p>VO2max refers to the maximum volume of oxygen an athlete can use during intense exercise at sea level. It is typically measured in <em>ml/kg/min</em>.</p>
-                    <div class="math-box">VO2max = Q × (a-v)O₂ difference</div>
-                    <p>Here, <strong>Q (Cardiac Output)</strong> represents the amount of blood the heart pumps per minute, and <strong>(a-v)O₂ difference</strong> shows the oxygen difference between arterial and venous blood (how much oxygen muscles can extract).</p>
-                    <h4>How Much Can It Improve?</h4>
-                    <p>Scientific studies show that VO2max is largely genetic (approx. 50%). With regular training, a sedentary individual can increase their VO2max by 15-20%. In elite endurance athletes, this value can reach 70-85 ml/kg/min for men and 60-75 for women.</p>
-                    <p>However, it should be noted; while VO2max defines the "size of the engine," Lactate Threshold and Running Economy determine "how efficiently" that engine is used.</p>
+                    <p>Considered the "gold standard" of performance in endurance sports, <strong>VO<sub>2max</sub></strong> refers to the maximum volume of oxygen an athlete can utilize during maximal effort at sea level. Contrary to popular belief, this value is not limited merely by lung capacity; the primary limiting factors are often the heart's pumping capacity and the muscles' ability to extract this oxygen from the blood.</p>
+                    
+                    <h3>The Fick Principle and Mathematical Model</h3>
+                    <p>Developed by Adolf Fick in 1870, the principle describes the physiological components determining VO<sub>2max</sub> with the following fundamental equation:</p>
+                    
+                    <div class="latex-formula" style="background: rgba(79, 209, 197, 0.1); padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        <span>VO</span><sub>2max</sub> <span class="op">=</span> <span>Q</span> <span class="op">×</span> <span>(a-v)O</span><sub>2</sub>
+                    </div>
+
+                    <p>In this equation:</p>
+                    <ul style="list-style-type: disc; padding-left: 20px; color: #a9b3d9;">
+                        <li><strong>Q (Cardiac Output):</strong> The amount of blood the heart pumps in one minute. <br><em>Formula: Stroke Volume (SV) × Heart Rate (HR)</em>. Can reach up to 35-40 L/min in elite athletes.</li>
+                        <li><strong>(a-v)O<sub>2</sub> Difference:</strong> The difference in oxygen content between arterial and venous blood. This indicates the extraction capacity of the muscles.</li>
+                    </ul>
+
+                    <blockquote>
+                        "VO2max defines the size of the engine, but Running Economy and Lactate Threshold determine how fast you can go with that engine." — Dr. Stephen Seiler
+                    </blockquote>
+
+                    <h3>Genetics and Training Adaptations</h3>
+                    <p>The famous <em>HERITAGE Family Study</em> by Bouchard et al. (1999) demonstrated that the training response (trainability) of VO<sub>2max</sub> is approximately 47% heritable. This means even if your baseline is low, if you have "high responder" genetics, you could increase this value by 40-50% with regular training.</p>
                 `
             }, 
             "references": [
-                "Bassett, D. R., & Howley, E. T. (2000). Limiting factors for maximum oxygen uptake and determinants of endurance performance.",
-                "Lundby, C., et al. (2017). Adaptation of cardiac output and its regulation to exercise training."
+                "Bassett, D. R., & Howley, E. T. (2000). Limiting factors for maximum oxygen uptake and determinants of endurance performance. Medicine and Science in Sports and Exercise.",
+                "Lundby, C., Montero, D., & Joyner, M. J. (2017). Biology of cardiovascular endurance capacity. Physiological Reviews.",
+                "Bouchard, C., et al. (1999). Familial aggregation of VO2max response to exercise training: results from the HERITAGE Family Study."
             ] 
         },
         { 
             "id": 102, 
             "date": "2024-11-10", 
-            "readTime": { "tr": "8 dk", "en": "8 min" }, 
+            "readTime": { "tr": "12 dk", "en": "12 min" }, 
             "category": { "tr": "Beslenme", "en": "Nutrition" }, 
-            "title": { "tr": "Kafein ve Dayanıklılık Performansı: Bilimsel Protokoller", "en": "Caffeine & Endurance Performance: Scientific Protocols" }, 
+            "title": { "tr": "Kafein ve Nöromüsküler Performans: Moleküler Bakış", "en": "Caffeine & Neuromuscular Performance: A Molecular View" }, 
             "summary": { 
-                "tr": "Optimal dozaj (3-6 mg/kg), zamanlama ve CYP1A2 genetiğinin performansa etkisi. Neden 'daha fazlası daha iyi' değil?", 
-                "en": "Optimal dosage (3-6 mg/kg), timing, and the effect of CYP1A2 genetics on performance. Why 'more' is not always 'better'?" 
+                "tr": "Adenozin reseptör blokajı, kalsiyum salınımı ve CYP1A2 polimorfizmleri. Kafein sadece 'uyanık tutmak'la kalmaz, kas kasılma gücünü nasıl değiştirir?", 
+                "en": "Adenosine receptor blockade, calcium release, and CYP1A2 polymorphisms. How does caffeine alter muscle contraction power beyond just 'keeping you awake'?" 
             }, 
             "content": { 
                 "tr": `
-                    <p>Kafein, dünyada en yaygın kullanılan ergojenik destektir. Temel mekanizması, beyindeki adenozin reseptörlerini bloke ederek yorgunluk algısını (RPE) düşürmesi ve nöromüsküler iletimi artırmasıdır.</p>
-                    <h4>Dozaj ve Zamanlama</h4>
-                    <p>Araştırmalar, performans artışı için <strong>3 ila 6 mg/kg</strong> dozajın optimal olduğunu göstermektedir. 9 mg/kg üzerindeki dozlar ek fayda sağlamadığı gibi anksiyete ve mide problemlerini artırabilir. Maksimum plazma konsantrasyonuna genellikle alımdan <strong>60 dakika sonra</strong> ulaşılır.</p>
-                    <h4>Genetik Farklılıklar (CYP1A2)</h4>
-                    <p>Kafeinin metabolize edilme hızı büyük ölçüde CYP1A2 genine bağlıdır:</p>
+                    <p>Kafein (1,3,7-trimetilksantin), dünyada en yaygın kullanılan psikoaktif maddedir ve dayanıklılık sporlarında performansı %2-4 oranında artırdığı kanıtlanmıştır. Ancak etkisi, sadece "uyarıcı" olmasından çok daha karmaşık biyokimyasal süreçlere dayanır.</p>
+                    
+                    <h3>Etki Mekanizmaları</h3>
+                    <p>Kafeinin ergojenik etkisi üç ana mekanizma üzerinden gerçekleşir:</p>
+                    <ol style="list-style-type: decimal; padding-left: 20px; color: #e7ecff;">
+                        <li><strong>Adenozin Antagonizmi:</strong> Kafein molekülü, yapısal olarak <em>adenozin</em>e benzer. Beyindeki A1 ve A2a reseptörlerine bağlanarak adenozini bloke eder. Normalde adenozin biriktiğinde yorgunluk ve uyku hali yaratır; kafein bunu engelleyerek dopamin ve nörotransmitter salınımını artırır, Algılanan Zorluk Derecesini (RPE) düşürür.</li>
+                        <li><strong>Kalsiyum (Ca<sup>2+</sup>) Mobilizasyonu:</strong> Kafein, sarkoplazmik retikulumdan kalsiyum salınımını artırır. Bu, aktin-miyozin çapraz köprü döngüsünü güçlendirerek kas kasılma kuvvetini artırabilir (özellikle yorgunluk durumunda).</li>
+                        <li><strong>Na<sup>+</sup>/K<sup>+</sup> Pompası Aktivitesi:</strong> Hücre dışı potasyum birikimini azaltarak kas yorgunluğunu geciktirir.</li>
+                    </ol>
+
+                    <h3>Dozaj ve "U-Şekilli" Etki Eğrisi</h3>
+                    <p>Araştırmalar, kafein dozajı ile performans arasında doğrusal olmayan bir ilişki olduğunu göstermektedir. Optimal bölge <strong>3 - 6 mg/kg</strong> aralığıdır.</p>
                     <ul>
-                        <li><strong>AA Genotipi (Hızlı Metabolizörler):</strong> Kafeinden en yüksek performans artışını sağlarlar.</li>
-                        <li><strong>AC/CC Genotipi (Yavaş Metabolizörler):</strong> Performans artışı göremeyebilir veya negatif etkilenebilirler.</li>
+                        <li><strong>Düşük Doz (< 3 mg/kg):</strong> Bilişsel fayda sağlar ancak fizyolojik etki sınırlıdır.</li>
+                        <li><strong>Optimal Doz (3-6 mg/kg):</strong> Maksimum performans artışı, minimum yan etki.</li>
+                        <li><strong>Yüksek Doz (> 9 mg/kg):</strong> Performans artışı durur; titreme, anksiyete ve taşikardi gibi yan etkiler performansı <em>düşürür</em>.</li>
                     </ul>
+
+                    <h3>Genetik Faktör: CYP1A2 Enzimi</h3>
+                    <p>Kafeinin karaciğerde parçalanma hızı, CYP1A2 genindeki bir polimorfizme (rs762551) bağlıdır. Sporcular genetik olarak üç gruba ayrılır:</p>
+                    <div style="background: #1e293b; padding: 15px; border-left: 4px solid var(--primary-rgb); margin: 15px 0;">
+                        <strong>AA Genotipi (Hızlı Metabolizörler):</strong> Kafeini hızla paraksantine dönüştürürler. En yüksek performans artışını bu grup sağlar.<br><br>
+                        <strong>AC/CC Genotipi (Yavaş Metabolizörler):</strong> Kafein kanlarında uzun süre kalır. Bu grupta kafein, damar daralmasına (vazokonstriksiyon) yol açarak performansı <em>negatif</em> etkileyebilir.
+                    </div>
                 `,
                 "en": `
-                    <p>Caffeine is the most widely used ergogenic aid in the world. Its primary mechanism is blocking adenosine receptors in the brain, reducing the rate of perceived exertion (RPE) and enhancing neuromuscular transmission.</p>
-                    <h4>Dosage and Timing</h4>
-                    <p>Research indicates that a dosage of <strong>3 to 6 mg/kg</strong> is optimal for performance enhancement. Doses above 9 mg/kg do not provide additional benefits and may increase anxiety and gastrointestinal issues. Peak plasma concentration is typically reached <strong>60 minutes after</strong> ingestion.</p>
-                    <h4>Genetic Differences (CYP1A2)</h4>
-                    <p>The rate at which caffeine is metabolized depends largely on the CYP1A2 gene:</p>
-                    <ul>
-                        <li><strong>AA Genotype (Fast Metabolizers):</strong> See the greatest performance benefits.</li>
-                        <li><strong>AC/CC Genotype (Slow Metabolizers):</strong> May see no benefit or even negative effects on performance.</li>
-                    </ul>
+                    <p>Caffeine (1,3,7-trimethylxanthine) is the most widely consumed psychoactive substance globally and is proven to enhance endurance performance by 2-4%. However, its effect relies on biochemical processes far more complex than simply being a "stimulant."</p>
+                    
+                    <h3>Mechanisms of Action</h3>
+                    <p>The ergogenic effect of caffeine occurs through three main mechanisms:</p>
+                    <ol style="list-style-type: decimal; padding-left: 20px; color: #e7ecff;">
+                        <li><strong>Adenosine Antagonism:</strong> The caffeine molecule is structurally similar to <em>adenosine</em>. It binds to A1 and A2a receptors in the brain, blocking adenosine. Normally, adenosine accumulation causes fatigue; caffeine prevents this, increasing dopamine release and lowering the Rate of Perceived Exertion (RPE).</li>
+                        <li><strong>Calcium (Ca<sup>2+</sup>) Mobilization:</strong> Caffeine enhances calcium release from the sarcoplasmic reticulum. This can potentiate actin-myosin cross-bridge cycling, increasing muscle contraction force.</li>
+                    </ol>
                 ` 
             }, 
             "references": [
-                "Guest, N., et al. (2018). Caffeine, CYP1A2 Genotype, and Endurance Performance in Athletes.",
-                "Grgic, J., et al. (2020). Wake up and smell the coffee: caffeine supplementation and exercise performance."
+                "Guest, N., et al. (2018). Caffeine, CYP1A2 Genotype, and Endurance Performance in Athletes: A Systematic Review and Meta-Analysis.",
+                "Pickering, C., & Kiely, J. (2018). Are the Current Guidelines on Caffeine Use in Sport Optimal for Everyone? Inter-individual Variation in Caffeine Ergogenicity."
             ] 
         },
         { 
             "id": 103, 
             "date": "2024-11-05", 
-            "readTime": { "tr": "12 dk", "en": "12 min" }, 
+            "readTime": { "tr": "18 dk", "en": "18 min" }, 
             "category": { "tr": "Antrenman Bilimi", "en": "Training Science" }, 
-            "title": { "tr": "Laktat Eşiğini Geliştirmek: LT1 ve LT2", "en": "Improving Lactate Threshold: LT1 vs LT2" }, 
+            "title": { "tr": "Laktat Eşiği Fizyolojisi: Metabolik Esneklik", "en": "Lactate Threshold Physiology: Metabolic Flexibility" }, 
             "summary": { 
-                "tr": "Aerobik (LT1) ve Anaerobik (LT2) eşikler arasındaki farklar nelerdir? Hangi antrenman tipi hangi eşiği yukarı taşır?", 
-                "en": "What are the differences between Aerobic (LT1) and Anaerobic (LT2) thresholds? Which training type improves which threshold?" 
+                "tr": "Laktat bir düşman mı yoksa yakıt mı? LT1 ve LT2 eşiklerini yukarı taşımak için mitokondriyal biyogenez ve monokarboksilat taşıyıcıların (MCT) rolü.", 
+                "en": "Is lactate an enemy or a fuel? The role of mitochondrial biogenesis and monocarboxylate transporters (MCT) in raising LT1 and LT2." 
             }, 
             "content": { 
                 "tr": `
-                    <p>Laktat sadece bir yorgunluk ürünü değil, aynı zamanda önemli bir yakıttır. İki temel fizyolojik dönüm noktası vardır:</p>
-                    <ul>
-                        <li><strong>LT1 (Aerobik Eşik):</strong> Laktatın dinlenik seviyenin üzerine çıkmaya başladığı ilk nokta (genellikle ~2 mmol/L). Maraton temposu ve Zone 2 antrenmanlarının temelidir.</li>
-                        <li><strong>LT2 (Anaerobik Eşik / MLSS):</strong> Laktat üretiminin temizlenme hızını aştığı nokta (genellikle ~4 mmol/L). Bu noktanın üzerinde asidoz hızla artar.</li>
+                    <p>Geçmişte "yorgunluk asidi" olarak bilinen laktat, günümüzde modern spor fizyolojisinin en önemli biyo-belirteçlerinden biri ve hayati bir enerji kaynağı olarak kabul edilmektedir. George Brooks'un "Laktat Mekik Teorisi" (Lactate Shuttle Theory), laktatın tip II (hızlı kasılan) liflerde üretilip, tip I (yavaş kasılan) liflere veya kalbe taşınarak okside edildiğini kanıtlamıştır.</p>
+                    
+                    <h3>İki Eşik Modeli: LT1 ve LT2</h3>
+                    <p>Dayanıklılık performansını belirleyen asıl faktör, laktat üretiminden ziyade, laktatın temizlenme (clearance) hızıdır. Antrenman yoğunluğuna göre iki fizyolojik kırılma noktası vardır:</p>
+                    
+                    <ul style="list-style-type: none; padding: 0;">
+                        <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                            <strong style="color:rgb(var(--primary-rgb)); font-size: 1.1em;">LT1 (Aerobik Eşik):</strong><br>
+                            Kan laktatının dinlenik seviyenin (yaklaşık 1.0 - 1.5 mmol/L) üzerine çıkmaya başladığı ilk noktadır. Genellikle maraton temposuna veya Zone 2'nin üst sınırına denk gelir. Bu noktada yağ oksidasyonu maksimuma yakındır (FatMax).
+                        </li>
+                        <li style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                            <strong style="color:rgb(var(--primary-rgb)); font-size: 1.1em;">LT2 (Anaerobik Eşik / MLSS):</strong><br>
+                            Laktat üretim hızının, vücudun temizleme hızına eşit olduğu son noktadır (Maksimum Laktat Kararlı Durumu). Genellikle 4.0 mmol/L civarındadır ancak kişiye göre değişir. Bu noktanın üzerinde metabolik asidoz (H<sup>+</sup> iyonları) hızla artar ve yorgunluk kaçınılmaz olur.
+                        </li>
                     </ul>
-                    <h4>Nasıl Geliştirilir?</h4>
-                    <p><strong>LT1'i Yükseltmek İçin:</strong> Yüksek hacimli düşük yoğunluklu antrenmanlar (Zone 2). Bu, yağ oksidasyonunu ve mitokondriyal yoğunluğu artırır.</p>
-                    <p><strong>LT2'yi Yükseltmek İçin:</strong> "Threshold" (Eşik) koşuları ve Norveç metodu gibi kontrollü interval çalışmaları. Amaç, vücudun yüksek yoğunlukta laktatı temizleme (clearance) kapasitesini artırmaktır.</p>
+
+                    <h3>Geliştirme Stratejileri</h3>
+                    <p>Bu iki eşiği sağa (daha yüksek hıza/güce) kaydırmak için hücresel düzeyde iki adaptasyon gereklidir:</p>
+                    
+                    <h4>1. Mitokondriyal Biyogenez (LT1 için)</h4>
+                    <p>Yüksek hacimli, düşük yoğunluklu antrenmanlar (Zone 2), PGC-1α genini aktive ederek mitokondri sayısını artırır. Mitokondri ne kadar fazlaysa, pirüvat o kadar verimli işlenir ve laktata dönüşmeden enerjiye çevrilir.</p>
+                    
+                    <h4>2. MCT Taşıyıcı Yoğunluğu (LT2 için)</h4>
+                    <p>Laktatın hücre dışına atılması ve başka hücrelere taşınması <strong>MCT1</strong> ve <strong>MCT4</strong> proteinleri ile olur. "Threshold" (eşik) antrenmanları ve yüksek yoğunluklu interval çalışmaları (HIIT), bu taşıyıcı proteinlerin yoğunluğunu artırarak laktatın kandan temizlenme hızını (clearance rate) iyileştirir.</p>
                 `,
                 "en": `
-                    <p>Lactate is not just a waste product but also a crucial fuel source. There are two main physiological turning points:</p>
-                    <ul>
-                        <li><strong>LT1 (Aerobic Threshold):</strong> The first point where lactate begins to rise above resting levels (usually ~2 mmol/L). This is the foundation of marathon pace and Zone 2 training.</li>
-                        <li><strong>LT2 (Anaerobic Threshold / MLSS):</strong> The point where lactate production exceeds clearance rates (usually ~4 mmol/L). Above this point, acidosis increases rapidly.</li>
+                    <p>Once known as "fatigue acid," lactate is now recognized as a vital fuel source and a key biomarker in modern sports physiology. George Brooks' "Lactate Shuttle Theory" proved that lactate produced in Type II fibers is transported to Type I fibers or the heart to be oxidized.</p>
+                    
+                    <h3>The Two-Threshold Model: LT1 and LT2</h3>
+                    <p>The decisive factor in endurance performance is not lactate production, but clearance rate.</p>
+                    
+                    <ul style="list-style-type: none; padding: 0;">
+                        <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                            <strong style="color:rgb(var(--primary-rgb)); font-size: 1.1em;">LT1 (Aerobic Threshold):</strong><br>
+                            The point where blood lactate begins to rise above resting levels (~1.5 mmol/L). Corresponds to Marathon pace or upper Zone 2.
+                        </li>
+                        <li style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                            <strong style="color:rgb(var(--primary-rgb)); font-size: 1.1em;">LT2 (Anaerobic Threshold / MLSS):</strong><br>
+                            Maximum Lactate Steady State. The limit where production equals clearance (~4.0 mmol/L). Above this, acidosis spikes.
+                        </li>
                     </ul>
-                    <h4>How to Improve?</h4>
-                    <p><strong>To Raise LT1:</strong> High-volume low-intensity training (Zone 2). This improves fat oxidation and mitochondrial density.</p>
-                    <p><strong>To Raise LT2:</strong> Threshold runs and controlled interval sessions like the Norwegian method. The goal is to improve the body's lactate clearance capacity at high intensities.</p>
                 ` 
             }, 
             "references": [
-                "Seiler, S. (2010). What is best practice for training intensity and duration distribution in endurance athletes?",
-                "San-Millán, I. (2020). Metabolomics of Endurance Capacity in World Tour Cyclists."
+                "Brooks, G. A. (2018). The Science and Translation of Lactate Shuttle Theory. Cell Metabolism.",
+                "San-Millán, I., & Brooks, G. A. (2018). Assessment of Metabolic Flexibility in Elite Athletes. Sports Medicine.",
+                "Seiler, S. (2010). What is best practice for training intensity and duration distribution in endurance athletes?"
             ] 
         },
         { 
             "id": 104, 
             "date": "2024-10-30", 
-            "readTime": { "tr": "9 dk", "en": "9 min" }, 
+            "readTime": { "tr": "14 dk", "en": "14 min" }, 
             "category": { "tr": "Koşu Mekaniği", "en": "Running Mechanics" }, 
-            "title": { "tr": "Koşu Ekonomisi: Gizli Hız Değişkeni", "en": "Running Economy: The Hidden Variable" }, 
+            "title": { "tr": "Koşu Ekonomisi: Yay-Kütle Modeli ve Enerji Maliyeti", "en": "Running Economy: Spring-Mass Model & Energy Cost" }, 
             "summary": { 
-                "tr": "Aynı VO2max değerine sahip iki koşucu neden farklı hızlarda koşar? Koşu ekonomisini (RE) etkileyen biyomekanik ve fizyolojik faktörler.", 
-                "en": "Why do two runners with the same VO2max run at different speeds? Biomechanical and physiological factors affecting Running Economy (RE)." 
+                "tr": "Aynı VO2max değerine sahip iki koşucu neden farklı hızlarda koşar? Koşu ekonomisini (RE) belirleyen biyomekanik faktörler ve hesaplama formülü.", 
+                "en": "Why do two runners with the same VO2max run at different speeds? Biomechanical factors determining Running Economy (RE) and calculation formula." 
             }, 
             "content": { 
                 "tr": `
-                    <p>Koşu Ekonomisi (RE), belirli bir hızda koşmak için gereken oksijen maliyetidir (enerji harcaması). Tıpkı bir arabanın yakıt tasarrufu gibidir; daha ekonomik bir koşucu, aynı hızda daha az enerji harcar.</p>
-                    <div class="math-box">RE = VO2 (ml/kg/dk) / Hız (km/s)</div>
-                    <h4>RE'yi Etkileyen Faktörler</h4>
+                    <p>Koşu Ekonomisi (RE), belirli bir hızda koşmak için gereken oksijen maliyetidir (enerji harcaması). Otomobillerdeki "yakıt tasarrufu" gibidir. Elit koşucular, amatörlere göre aynı hızda %20-30 daha az enerji harcarlar. Bu, VO<sub>2max</sub> değeri daha düşük olan bir atletin, daha ekonomik koşarak daha yüksek VO<sub>2max</sub>'a sahip bir rakibi geçebileceği anlamına gelir.</p>
+                    
+                    <h3>RE'nin Hesaplanması</h3>
+                    <p>Koşu ekonomisi genellikle kg başına bir kilometrede tüketilen oksijen miktarı ile ifade edilir:</p>
+                    
+                    <div class="latex-formula" style="background: rgba(79, 209, 197, 0.1); padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        <span>RE</span> <span class="op">=</span> 
+                        <div class="fraction">
+                            <span class="numerator">VO<sub>2</sub> (ml/kg/dk)</span>
+                            <span class="denominator">Hız (m/dk)</span>
+                        </div>
+                    </div>
+
+                    <h3>Biyomekanik ve "Yay-Kütle" Modeli</h3>
+                    <p>İnsan bacağı koşu sırasında bir yay (spring) gibi davranır. Yerle temas anında tendonlar elastik enerji depolar ve itiş (push-off) fazında bu enerjiyi geri verir. Bu "bedava" enerjidir.</p>
                     <ul>
-                        <li><strong>Biyomekanik:</strong> Dikey salınım (zıplama) ve yerle temas süresi.</li>
-                        <li><strong>Kas-Tendon Sertliği (Stiffness):</strong> Bacakların bir yay gibi davranarak elastik enerjiyi geri döndürme yeteneği.</li>
-                        <li><strong>Antropometri:</strong> Bacak kütlesinin dağılımı (ince baldırlar daha ekonomiktir).</li>
+                        <li><strong>Dikey Salınım (Vertical Oscillation):</strong> Çok fazla zıplamak enerjiyi dikey düzlemde boşa harcar. Elitlerde bu değer 6-8 cm arasındadır.</li>
+                        <li><strong>Yerle Temas Süresi (GCT):</strong> Ayak yerde ne kadar az kalırsa, elastik enerji kaybı o kadar az olur. Elit sprinterlerde <100ms, maratoncularda <200ms hedeflenir.</li>
+                        <li><strong>Bacak Sertliği (Leg Stiffness):</strong> Tendonların sertliği ne kadar yüksekse, enerji geri dönüşümü o kadar verimli olur.</li>
                     </ul>
-                    <h4>Geliştirme Stratejileri</h4>
-                    <p>Ağır kuvvet antrenmanları (maksimum kuvvet) ve plyometrik egzersizler, tendon sertliğini artırarak koşu ekonomisini %3-8 oranında iyileştirebilir. Sadece koşarak ekonomi gelişimi yıllar alırken, kuvvet antrenmanı bu süreci hızlandırır.</p>
+
+                    <h3>RE Nasıl Geliştirilir?</h3>
+                    <p>Sadece koşmak ekonomiyi yıllar içinde geliştirir, ancak süreci hızlandırmanın yolları vardır:</p>
+                    <ol>
+                        <li><strong>Ağır Kuvvet Antrenmanı:</strong> (1-5 tekrar, %85+ 1RM). Kas hipertrofisine yol açmadan nöromüsküler verimliliği artırır.</li>
+                        <li><strong>Plyometrikler:</strong> (Kutu zıplamaları, ip atlama). Tendon sertliğini (stiffness) artırarak "yay" etkisini güçlendirir.</li>
+                        <li><strong>Karbon Plakalı Ayakkabılar:</strong> Araştırmalar, metatarsofalangeal eklemin bükülmesini engelleyerek ve köpük enerjisiyle ekonomiyi %2-4 oranında artırdığını göstermektedir.</li>
+                    </ol>
                 `,
                 "en": `
-                    <p>Running Economy (RE) is the oxygen cost (energy expenditure) required to run at a given speed. It is like a car's fuel economy; a more economical runner uses less energy at the same speed.</p>
-                    <div class="math-box">RE = VO2 (ml/kg/min) / Speed (km/h)</div>
-                    <h4>Factors Affecting RE</h4>
+                    <p>Running Economy (RE) represents the oxygen cost (energy expenditure) required to run at a given submaximal speed. It is analogous to fuel economy in cars. Elite runners expend 20-30% less energy than amateurs at the same speed.</p>
+                    
+                    <h3>Calculation of RE</h3>
+                    <p>RE is typically expressed as the volume of oxygen consumed per kilogram per kilometer:</p>
+                    
+                    <div class="latex-formula" style="background: rgba(79, 209, 197, 0.1); padding: 15px; border-radius: 8px; margin: 20px 0;">
+                        <span>RE</span> <span class="op">=</span> 
+                        <div class="fraction">
+                            <span class="numerator">VO<sub>2</sub> (ml/kg/min)</span>
+                            <span class="denominator">Speed (m/min)</span>
+                        </div>
+                    </div>
+
+                    <h3>Biomechanics and the "Spring-Mass" Model</h3>
+                    <p>The human leg acts like a spring during running. Tendons store elastic energy upon impact and return it during the push-off phase. This is essentially "free" energy.</p>
                     <ul>
-                        <li><strong>Biomechanics:</strong> Vertical oscillation (bouncing) and ground contact time.</li>
-                        <li><strong>Muscle-Tendon Stiffness:</strong> The ability of the legs to act like springs and return elastic energy.</li>
-                        <li><strong>Anthropometry:</strong> Distribution of leg mass (slimmer calves are more economical).</li>
+                        <li><strong>Vertical Oscillation:</strong> Bouncing too high wastes energy vertically. Elite values are typically 6-8 cm.</li>
+                        <li><strong>Ground Contact Time (GCT):</strong> Shorter contact time minimizes energy dissipation.</li>
                     </ul>
-                    <h4>Improvement Strategies</h4>
-                    <p>Heavy strength training (max strength) and plyometric exercises can improve running economy by 3-8% by increasing tendon stiffness. While running alone improves economy over years, strength training accelerates this process.</p>
                 ` 
             }, 
             "references": [
-                "Barnes, K. R., & Kilding, A. E. (2015). Strategies to improve running economy.",
-                "Paavolainen, L., et al. (1999). Explosive-strength training improves 5-km running time by improving running economy and muscle power."
+                "Barnes, K. R., & Kilding, A. E. (2015). Strategies to improve running economy. Sports Medicine.",
+                "Hoogkamer, W., et al. (2018). A comparison of the energetic cost of running in marathon racing shoes. Sports Medicine."
             ] 
         }
     ],
@@ -158,29 +261,29 @@ window.HybNotesData = {
         { 
             "tag": "#Fizyoloji", 
             "text": { 
-                "tr": "Laktat bir düşman değil, kalbin ve beynin kullandığı verimli bir yakıttır. Asıl yorgunluk sebebi asidozdur (H+ iyonları).", 
-                "en": "Lactate is not an enemy, but an efficient fuel used by the heart and brain. The real cause of fatigue is acidosis (H+ ions)." 
+                "tr": "Laktat asidoza neden olmaz; tam tersine, asidozu önlemeye çalışan bir tamponlama sürecinin yan ürünüdür. Asıl suçlu ATP hidrolizi sonucu açığa çıkan H+ iyonlarıdır.", 
+                "en": "Lactate does not cause acidosis; rather, it is a byproduct of a buffering process attempting to prevent it. The real culprit is H+ ions released from ATP hydrolysis." 
             } 
         },
         { 
             "tag": "#Beslenme", 
             "text": { 
-                "tr": "Kafeinin yarılanma ömrü ortalama 5 saattir, ancak bazı bireylerde bu süre 1.5 saate inebilir veya 10 saate çıkabilir.", 
-                "en": "The average half-life of caffeine is 5 hours, but in some individuals, it can drop to 1.5 hours or extend to 10 hours." 
+                "tr": "Pancar suyu (nitrat), kan damarlarını genişleterek oksijen maliyetini düşürebilir ve özellikle yüksek irtifada performansı artırabilir.", 
+                "en": "Beetroot juice (nitrate) can vasodilate blood vessels, reducing oxygen cost and improving performance, especially at high altitudes." 
             } 
         },
         { 
             "tag": "#Mekanik", 
             "text": { 
-                "tr": "Ayakkabı ağırlığındaki her 100 gramlık artış, koşu ekonomisini yaklaşık %1 oranında kötüleştirir.", 
-                "en": "Every 100-gram increase in shoe weight worsens running economy by approximately 1%." 
+                "tr": "Ayakkabı ağırlığındaki her 100 gramlık artış, maraton süresini ortalama 3-4 dakika yavaşlatır.", 
+                "en": "Every 100-gram increase in shoe weight slows down marathon time by an average of 3-4 minutes." 
             } 
         },
         { 
             "tag": "#Antrenman", 
             "text": { 
-                "tr": "Elit maratoncular antrenmanlarının %80'ini düşük yoğunlukta (Zone 1-2) yaparlar.", 
-                "en": "Elite marathoners perform 80% of their training at low intensity (Zone 1-2)." 
+                "tr": "Polarize antrenman modeli (80/20 kuralı), hem elit hem de amatör sporcularda VO2max artışı için en verimli yöntem olarak kanıtlanmıştır.", 
+                "en": "The polarized training model (80/20 rule) has been proven as the most efficient method for VO2max improvement in both elite and amateur athletes." 
             } 
         }
     ]
