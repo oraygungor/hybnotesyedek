@@ -109,7 +109,7 @@ const getPctColor = (pct) => {
     return 'text-rose-400';
 };
 
-// Slider Style (Bu stil slider'ın her zaman çalışmasını sağlar)
+// Slider Style
 const sliderStyle = {
     WebkitAppearance: 'none',
     width: '100%',
@@ -123,14 +123,23 @@ const sliderStyle = {
 };
 
 // --- SUB-COMPONENT: SliderGroup ---
-const SliderGroup = ({ keys, title, colorClass, icon, values, onChange, t }) => (
+const SliderGroup = ({ keys, title, colorClass, icon, values, onChange, t, extraHeaderContent }) => (
     <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl relative overflow-hidden isolate">
-        {/* Arka Plan Efekti - pointer-events-none çok önemli */}
+        {/* Arka Plan Efekti */}
         <div className={`absolute -top-10 -right-10 w-48 h-48 ${colorClass} rounded-full mix-blend-screen filter blur-3xl opacity-10 pointer-events-none -z-10`}></div>
         
-        <h2 className={`text-2xl font-black mb-6 flex items-center gap-2 ${colorClass.replace('bg-', 'text-')} relative z-10`}>
-            {icon} {title}
-        </h2>
+        {/* Header Alanı: Mobilde alt alta, Desktopta yan yana */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 relative z-10">
+            <h2 className={`text-2xl font-black flex items-center gap-2 ${colorClass.replace('bg-', 'text-')}`}>
+                {icon} {title}
+            </h2>
+            {/* Eğer ekstra içerik (Eşitle butonu vb.) varsa buraya gelir */}
+            {extraHeaderContent && (
+                <div className="flex-shrink-0">
+                    {extraHeaderContent}
+                </div>
+            )}
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 relative z-10">
             {keys.map(key => {
@@ -158,7 +167,6 @@ const SliderGroup = ({ keys, title, colorClass, icon, values, onChange, t }) => 
                             </div>
                         </div>
                         
-                        {/* INPUT RANGE: Basit ve temiz, ekstra div içinde değil */}
                         <input 
                             type="range" 
                             min={data.min} 
@@ -237,6 +245,25 @@ const HyroxCalculatorPage = ({ lang = 'tr', activeTheme }) => {
         });
     };
 
+    // Eşitleme Paneli Bileşeni (Tekrar kullanımı için)
+    const SyncControl = () => (
+        <div className="flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-lg border border-slate-700/50 backdrop-blur-sm shadow-lg w-full md:w-auto justify-center md:justify-start">
+            <input 
+                type="text" 
+                placeholder={t.sync_placeholder} 
+                value={syncInput}
+                onChange={(e) => setSyncInput(e.target.value)}
+                className="w-20 bg-transparent text-center text-sm text-white focus:outline-none font-mono font-bold"
+            />
+            <button 
+                onClick={handleSync}
+                className="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded text-xs font-bold transition-colors shadow-lg active:scale-95 transform whitespace-nowrap"
+            >
+                {t.sync_button}
+            </button>
+        </div>
+    );
+
     return (
         <div className="animate-fade-in space-y-8 pb-20">
             {/* Header */}
@@ -250,22 +277,7 @@ const HyroxCalculatorPage = ({ lang = 'tr', activeTheme }) => {
                 {/* Sol Taraf: Inputlar */}
                 <div className="lg:col-span-8 space-y-8">
                     {/* Koşular */}
-                    <div className="relative">
-                        <div className="absolute right-6 top-6 z-20 flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-lg border border-slate-700/50 backdrop-blur-sm shadow-lg">
-                            <input 
-                                type="text" 
-                                placeholder={t.sync_placeholder} 
-                                value={syncInput}
-                                onChange={(e) => setSyncInput(e.target.value)}
-                                className="w-16 bg-transparent text-center text-sm text-white focus:outline-none font-mono font-bold"
-                            />
-                            <button 
-                                onClick={handleSync}
-                                className="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded text-xs font-bold transition-colors shadow-lg active:scale-95 transform"
-                            >
-                                {t.sync_button}
-                            </button>
-                        </div>
+                    <div>
                         <SliderGroup 
                             keys={['run1','run2','run3','run4','run5','run6','run7','run8']} 
                             title={t.running_header} 
@@ -274,6 +286,8 @@ const HyroxCalculatorPage = ({ lang = 'tr', activeTheme }) => {
                             values={values}
                             onChange={handleSliderChange}
                             t={t}
+                            // SyncControl'ü artık SliderGroup içine, başlığın yanına gönderiyoruz
+                            extraHeaderContent={<SyncControl />}
                         />
                     </div>
 
